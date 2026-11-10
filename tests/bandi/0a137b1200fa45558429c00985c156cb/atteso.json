@@ -1,0 +1,23 @@
+{
+  "id_inpa": "0a137b1200fa45558429c00985c156cb",
+  "url": "https://www.inpa.gov.it/bandi-e-avvisi/dettaglio-bando-avviso/?concorso_id=0a137b1200fa45558429c00985c156cb",
+  "ente": "Provincia di Ravenna",
+  "scadenza_inpa": "2026-12-11T11:00:00Z",
+  "posti": 1,
+  "nota": "Provincia di Ravenna, istruttore servizi tecnici. Diploma, nessuna laurea.",
+  "titolo_studio": {
+    "classi_laurea": [],
+    "diplomi": [
+      "geometra",
+      "perito edile"
+    ],
+    "ambiguo": null
+  },
+  "patente": [
+    "B"
+  ],
+  "abilitazione": false,
+  "albo": false,
+  "eta_massima": null,
+  "esperienza_anni_minimi": null
+}

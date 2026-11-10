@@ -1,0 +1,38 @@
+{
+  "id_inpa": "7bf5bc732d0142e7b259aa0d0f193e4e",
+  "url": "https://www.inpa.gov.it/bandi-e-avvisi/dettaglio-bando-avviso/?concorso_id=7bf5bc732d0142e7b259aa0d0f193e4e",
+  "ente": "Comune di Siniscola",
+  "scadenza_inpa": "2026-11-25T22:59:00Z",
+  "posti": 1,
+  "nota": "Comune di Siniscola, specialista attività urbanistiche. Tabelle di equiparazione con triennali e magistrali.",
+  "titolo_studio": {
+    "classi_laurea": [
+      "LM-23",
+      "LM-24",
+      "LM-26",
+      "LM-4",
+      "LM-3",
+      "LM-48",
+      "28/S",
+      "4/S",
+      "3/S",
+      "54/S",
+      "DM509-04",
+      "DM509-07",
+      "DM509-08",
+      "L-17",
+      "L-23",
+      "L-21",
+      "L-7"
+    ],
+    "diplomi": [],
+    "ambiguo": null
+  },
+  "patente": [
+    "B"
+  ],
+  "abilitazione": false,
+  "albo": false,
+  "eta_massima": null,
+  "esperienza_anni_minimi": null
+}
