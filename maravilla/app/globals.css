@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+body { @apply bg-notte text-zinc-100 antialiased; }
+
+@layer components {
+  .bottone { @apply inline-flex items-center justify-center rounded-full bg-gradient-to-r from-fiamma to-magenta px-6 py-3 font-semibold text-white shadow-lg shadow-fiamma/20 transition active:scale-95; }
+  .bottone-vuoto { @apply inline-flex items-center justify-center rounded-full border border-bordo px-6 py-3 font-semibold text-zinc-200 transition hover:border-fiamma; }
+  .scheda { @apply rounded-2xl border border-bordo bg-carta p-5; }
+  .campo { @apply w-full rounded-xl border border-bordo bg-notte px-4 py-3 text-base outline-none focus:border-fiamma; }
+}
