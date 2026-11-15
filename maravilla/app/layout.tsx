@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: `${locale.nome} · ${locale.claim}`,
   description: `${locale.claim}. ${locale.indirizzo}`,
 };
-export const viewport: Viewport = { themeColor: "#0b0b10", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#ddd6c6", width: "device-width", initialScale: 1 };
 
 const voci = [
   { href: "/menu", testo: "Menu" },
@@ -22,9 +22,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <header className="sticky top-0 z-10 border-b border-bordo bg-notte/90 backdrop-blur">
           <nav className="mx-auto flex max-w-2xl items-center justify-between px-5 py-4">
             <Link href="/" className="text-lg font-black tracking-wide">
-              MARAVILLA <span className="text-fiamma">✨</span>
+              Maravilla
             </Link>
-            <ul className="flex gap-5 text-sm font-medium text-zinc-300">
+            <ul className="flex gap-5 text-sm font-medium text-[#2a2a26]">
               {voci.map((v) => (
                 <li key={v.href}>
                   <Link href={v.href} className="hover:text-fiamma">{v.testo}</Link>

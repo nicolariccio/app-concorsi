@@ -6,8 +6,8 @@ export default function manifest(): MetadataRoute.Manifest {
     short_name: "Maravilla",
     start_url: "/",
     display: "standalone",
-    background_color: "#0b0b10",
-    theme_color: "#0b0b10",
+    background_color: "#ddd6c6",
+    theme_color: "#ddd6c6",
     lang: "it",
   };
 }

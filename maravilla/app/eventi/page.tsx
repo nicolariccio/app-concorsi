@@ -11,7 +11,7 @@ export default function Eventi() {
         <article key={e.id} className="scheda space-y-2">
           <h2 className="text-lg font-bold">{e.titolo}</h2>
           <p className="text-sm font-medium text-fiamma">{e.quando}</p>
-          <p className="text-zinc-400">{e.descrizione}</p>
+          <p className="text-[#55534b]">{e.descrizione}</p>
           <Link href="/prenota" className="bottone mt-2">Prenota</Link>
         </article>
       ))}

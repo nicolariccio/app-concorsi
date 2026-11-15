@@ -40,7 +40,7 @@ export default function Prenota() {
       <div className="scheda space-y-2 text-center">
         <p className="text-4xl">🎉</p>
         <h1 className="text-2xl font-black">Richiesta inviata!</h1>
-        <p className="text-zinc-400">Ti confermiamo la prenotazione al numero che hai indicato.</p>
+        <p className="text-[#55534b]">Ti confermiamo la prenotazione al numero che hai indicato.</p>
       </div>
     );
   }

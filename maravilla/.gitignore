@@ -3,3 +3,6 @@ node_modules
 next-env.d.ts
 .env*.local
 tsconfig.tsbuildinfo
+
+public/landing/.taste-skill
+public/landing/shots

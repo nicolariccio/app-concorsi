@@ -5,11 +5,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        notte: "#0b0b10",
-        carta: "#15151d",
-        bordo: "#26263a",
-        fiamma: "#ff6a3d",
-        magenta: "#ff3d8b",
+        notte: "#ddd6c6",
+        carta: "#d2cab8",
+        bordo: "#b9b19c",
+        fiamma: "#455733",
+        magenta: "#8a2d2d",
       },
       fontFamily: { sans: ["system-ui", "ui-sans-serif", "Segoe UI", "sans-serif"] },
     },

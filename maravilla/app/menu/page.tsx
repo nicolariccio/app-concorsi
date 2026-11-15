@@ -16,9 +16,9 @@ export default function Menu() {
             <article key={v.nome} className="scheda flex items-start justify-between gap-4">
               <div>
                 <h3 className="font-semibold">{v.nome}</h3>
-                <p className="text-sm text-zinc-400">{v.descrizione}</p>
+                <p className="text-sm text-[#55534b]">{v.descrizione}</p>
                 {v.allergeni.length > 0 && (
-                  <p className="mt-1 text-xs text-zinc-500">Allergeni: {v.allergeni.join(", ")}</p>
+                  <p className="mt-1 text-xs text-[#55534b]">Allergeni: {v.allergeni.join(", ")}</p>
                 )}
               </div>
               <p className="font-bold">€{v.prezzo}</p>
