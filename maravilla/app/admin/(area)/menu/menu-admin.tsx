@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ALLERGENI } from "@/lib/allergeni";
 import { prezzoPerCampo } from "@/lib/prezzo";
-import type { Categoria, Piatto } from "@/lib/tipi";
+import type { Categoria, Gruppo, Piatto } from "@/lib/tipi";
 import { useAzione } from "../azione";
 
 // Forma che l'API si aspetta (il prezzo è un testo, es. "9,50").
@@ -141,6 +141,7 @@ function CategoriaBox({
   onGiu: () => void;
 }) {
   const [nome, setNome] = useState(categoria.nome);
+  const [gruppo, setGruppo] = useState<Gruppo>(categoria.gruppo ?? "food");
   const { occupato, errori, esegui } = useAzione();
 
   const muovi = (i: number, a: number) => {
@@ -154,14 +155,19 @@ function CategoriaBox({
         className="space-y-2"
         onSubmit={(e) => {
           e.preventDefault();
-          esegui("POST", "categorie", { id: categoria.id, nome, ordine: categoria.ordine });
+          esegui("POST", "categorie", { id: categoria.id, nome, gruppo, ordine: categoria.ordine });
         }}
       >
         <label htmlFor={`c${categoria.id}`} className="etichetta">Categoria</label>
         <input id={`c${categoria.id}`} className="campo font-display text-2xl font-semibold" value={nome} onChange={(e) => setNome(e.target.value)} />
         {errori.nome && <p className="errore">{errori.nome}</p>}
+        <label htmlFor={`g${categoria.id}`} className="etichetta">Sezione del menu</label>
+        <select id={`g${categoria.id}`} className="campo" value={gruppo} onChange={(e) => setGruppo(e.target.value as Gruppo)}>
+          <option value="food">Food</option>
+          <option value="drink">Drink</option>
+        </select>
         <div className="flex flex-wrap items-center gap-2">
-          <button type="submit" disabled={occupato} className="bottone-piccolo bg-panna text-notte">Salva nome</button>
+          <button type="submit" disabled={occupato} className="bottone-piccolo bg-panna text-notte">Salva</button>
           <button type="button" disabled={occupato} className="bottone-piccolo" aria-label="Sposta categoria su" onClick={onSu}>↑</button>
           <button type="button" disabled={occupato} className="bottone-piccolo" aria-label="Sposta categoria giù" onClick={onGiu}>↓</button>
           <button
@@ -190,36 +196,59 @@ function CategoriaBox({
   );
 }
 
+const GRUPPI: { id: Gruppo; titolo: string }[] = [
+  { id: "food", titolo: "Food" },
+  { id: "drink", titolo: "Drink" },
+];
+
 export function MenuAdmin({ categorie, piatti }: { categorie: Categoria[]; piatti: Piatto[] }) {
   const [nuova, setNuova] = useState("");
+  const [nuovoGruppo, setNuovoGruppo] = useState<Gruppo>("food");
   const { occupato, errori, esegui } = useAzione();
+  const gruppoDi = (c: Categoria): Gruppo => c.gruppo ?? "food";
 
-  const muovi = (i: number, a: number) => {
-    if (a < 0 || a >= categorie.length) return;
-    esegui("POST", "categorie", riordina(categorie, i, a).map(({ id, nome, ordine }) => ({ id, nome, ordine })), "Spostata");
+  // Si riordina dentro la propria sezione (Food o Drink).
+  const muovi = (g: Gruppo, i: number, a: number) => {
+    const lista = categorie.filter((c) => gruppoDi(c) === g);
+    if (a < 0 || a >= lista.length) return;
+    esegui("POST", "categorie", riordina(lista, i, a).map(({ id, nome, ordine }) => ({ id, nome, gruppo: g, ordine })), "Spostata");
   };
 
   return (
-    <div className="space-y-5">
-      {categorie.map((c, i) => (
-        <CategoriaBox
-          key={`${c.id}-${c.nome}-${c.ordine}`}
-          categoria={c}
-          piatti={piatti.filter((p) => p.categoria_id === c.id)}
-          onSu={() => muovi(i, i - 1)}
-          onGiu={() => muovi(i, i + 1)}
-        />
-      ))}
+    <div className="space-y-8">
+      {GRUPPI.map((g) => {
+        const lista = categorie.filter((c) => gruppoDi(c) === g.id);
+        return (
+          <section key={g.id} className="space-y-4" aria-label={g.titolo}>
+            <h2 className="border-b border-bordo pb-2 text-3xl font-semibold text-oro">{g.titolo}</h2>
+            {lista.length === 0 && <p className="text-salvia">Nessuna categoria in {g.titolo}.</p>}
+            {lista.map((c, i) => (
+              <CategoriaBox
+                key={`${c.id}-${c.nome}-${c.ordine}-${gruppoDi(c)}`}
+                categoria={c}
+                piatti={piatti.filter((p) => p.categoria_id === c.id)}
+                onSu={() => muovi(g.id, i, i - 1)}
+                onGiu={() => muovi(g.id, i, i + 1)}
+              />
+            ))}
+          </section>
+        );
+      })}
       <form
         className="scheda space-y-3"
         onSubmit={async (e) => {
           e.preventDefault();
-          const esito = await esegui("POST", "categorie", { nome: nuova, ordine: (categorie.at(-1)?.ordine ?? 0) + 10 }, "Categoria aggiunta");
+          const esito = await esegui("POST", "categorie", { nome: nuova, gruppo: nuovoGruppo, ordine: (categorie.at(-1)?.ordine ?? 0) + 10 }, "Categoria aggiunta");
           if (esito.ok) setNuova("");
         }}
       >
-        <label htmlFor="nuova-cat" className="etichetta">Nuova categoria</label>
-        <input id="nuova-cat" className="campo" placeholder="Es. Cotolette" value={nuova} onChange={(e) => setNuova(e.target.value)} />
+        <label htmlFor="nuova-gruppo" className="etichetta">Nuova categoria in</label>
+        <select id="nuova-gruppo" className="campo" value={nuovoGruppo} onChange={(e) => setNuovoGruppo(e.target.value as Gruppo)}>
+          <option value="food">Food (es. Antipasti, Cotolette)</option>
+          <option value="drink">Drink (es. Soft drink, Signature cocktails, Vini)</option>
+        </select>
+        <label htmlFor="nuova-cat" className="etichetta">Nome della categoria</label>
+        <input id="nuova-cat" className="campo" placeholder="Es. Antipasti" value={nuova} onChange={(e) => setNuova(e.target.value)} />
         {errori.nome && <p className="errore">{errori.nome}</p>}
         <div className="flex items-center gap-3">
           <button type="submit" disabled={occupato} className="bottone-piccolo bg-panna text-notte">Aggiungi categoria</button>

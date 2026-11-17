@@ -44,12 +44,15 @@ export function getEventi(): Promise<Evento[]> {
   return oVuoto(async () => porOrdine((await store().lista("eventi")) as unknown as Evento[]), []);
 }
 
-/** Menu pubblico: solo piatti visibili, solo categorie che ne hanno almeno uno. */
+/** Menu pubblico: per gruppo (Food, Drink), solo categorie con almeno un piatto visibile. */
 export async function getMenuPubblico() {
   const [categorie, piatti] = await Promise.all([getCategorie(), getPiatti()]);
-  return categorie
-    .map((c) => ({ ...c, piatti: piatti.filter((p) => p.categoria_id === c.id && p.visibile) }))
+  const conPiatti = categorie
+    .map((c) => ({ ...c, gruppo: c.gruppo ?? "food", piatti: piatti.filter((p) => p.categoria_id === c.id && p.visibile) }))
     .filter((c) => c.piatti.length > 0);
+  return (["food", "drink"] as const)
+    .map((g) => ({ gruppo: g, categorie: conPiatti.filter((c) => c.gruppo === g) }))
+    .filter((g) => g.categorie.length > 0);
 }
 
 export function getPrenotazioni(): Promise<PrenotazioneRiga[]> {

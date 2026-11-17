@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { validaEvento, validaLocale, validaOrari, validaPiatto, validaStato } from "../lib/validazione";
+import { validaCategoria, validaEvento, validaLocale, validaOrari, validaPiatto, validaStato } from "../lib/validazione";
 
 const CAT = "11111111-1111-4111-8111-111111111111";
 
@@ -27,6 +27,13 @@ describe("validazioni admin", () => {
     expect(validaOrari(giorni.slice(0, 6)).ok).toBe(false);
     expect(validaOrari(giorni.map((g, i) => (i === 2 ? { ...g, apertura: "9" } : g))).ok).toBe(false);
     expect(validaOrari(giorni.map((g, i) => (i === 2 ? { chiuso: true } : g))).ok).toBe(true);
+  });
+  it("categoria: il gruppo Food o Drink è obbligatorio", () => {
+    expect(validaCategoria({ nome: "Antipasti", gruppo: "food" }).ok).toBe(true);
+    expect(validaCategoria({ nome: "Vini", gruppo: "drink", ordine: 20 }).ok).toBe(true);
+    expect(validaCategoria({ nome: "Vini" }).ok).toBe(false);
+    expect(validaCategoria({ nome: "Vini", gruppo: "altro" }).ok).toBe(false);
+    expect(validaCategoria({ nome: "", gruppo: "food" }).ok).toBe(false);
   });
   it("evento: tipo obbligatorio", () => {
     expect(validaEvento({ tipo: "evento", titolo: "DJ" }).ok).toBe(true);
