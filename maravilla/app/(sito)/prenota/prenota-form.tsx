@@ -12,6 +12,8 @@ export function PrenotaForm({ oggi, maxPersone }: { oggi: string; maxPersone: nu
   const [messaggio, setMessaggio] = useState("");
   const [data, setData] = useState("");
   const [ora, setOra] = useState("");
+  const [link, setLink] = useState("");
+  const [copiato, setCopiato] = useState(false);
 
   const [disp, setDisp] = useState<Disponibilita | null>(null);
 
@@ -43,7 +45,10 @@ export function PrenotaForm({ oggi, maxPersone }: { oggi: string; maxPersone: nu
         body: JSON.stringify(dati),
       });
       const json = await res.json();
-      if (res.ok) setStato("ok");
+      if (res.ok) {
+        if (json.codice) setLink(`${window.location.origin}/prenotazione/${json.codice}`);
+        setStato("ok");
+      }
       else {
         setErrori(json.errori ?? {});
         setMessaggio(json.messaggio ?? "Qualcosa è andato storto, riprova.");
@@ -60,6 +65,29 @@ export function PrenotaForm({ oggi, maxPersone }: { oggi: string; maxPersone: nu
       <div className="scheda space-y-2">
         <h1 className="text-4xl font-semibold">Richiesta inviata.</h1>
         <p className="text-salvia">Ti confermiamo la prenotazione al numero che hai indicato.</p>
+        {link && (
+          <div className="space-y-2 pt-2">
+            <p className="text-sm text-salvia">Se ti serve cambiarla o annullarla, usa questo link. Salvalo: è solo tuo.</p>
+            <p className="break-all rounded-xl border border-bordo bg-notte p-3 text-sm">{link}</p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                className="bottone-piccolo"
+                onClick={async () => {
+                  try {
+                    await navigator.clipboard.writeText(link);
+                    setCopiato(true);
+                  } catch {
+                    setCopiato(false);
+                  }
+                }}
+              >
+                {copiato ? "Copiato" : "Copia il link"}
+              </button>
+              <a href={link} className="bottone-piccolo">Apri</a>
+            </div>
+          </div>
+        )}
       </div>
     );
   }

@@ -19,13 +19,14 @@ export async function POST(req: Request) {
   const esito = validaPrenotazione(corpo, orari, new Date(), { chiusure, prenotazioni, copertiMax: locale.coperti_max });
   if (!esito.ok) return NextResponse.json({ messaggio: "Controlla i campi", errori: esito.errori }, { status: 422 });
 
+  let codice = "";
   try {
-    await inserisciPrenotazione(esito.valore);
+    codice = await inserisciPrenotazione(esito.valore);
   } catch (e) {
     if (e instanceof NonConfigurato) return NextResponse.json({ messaggio: "Prenotazioni non ancora attive" }, { status: 503 });
     console.error("[prenota] salvataggio non riuscito"); // nessun dato personale nei log
     return NextResponse.json({ messaggio: "Non riusciamo a salvare, riprova" }, { status: 502 });
   }
   await avvisaGestore(esito.valore, locale.nome); // se l'email non parte la prenotazione resta valida
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, codice });
 }

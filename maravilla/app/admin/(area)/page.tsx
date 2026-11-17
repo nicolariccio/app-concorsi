@@ -1,5 +1,6 @@
 import { getLocale, getPrenotazioni } from "@/lib/dati";
 import { oggiRoma } from "@/lib/datetime";
+import { origineSito } from "@/lib/sito";
 import { richiediAdmin } from "./guard";
 import { PrenotazioniAdmin } from "./prenotazioni-admin";
 
@@ -13,7 +14,7 @@ export default async function Prenotazioni() {
   return (
     <section className="space-y-4">
       <h1 className="text-4xl font-semibold">Prenotazioni</h1>
-      <PrenotazioniAdmin righe={righe} oggi={oggi} nomeLocale={locale.nome} />
+      <PrenotazioniAdmin righe={righe} oggi={oggi} nomeLocale={locale.nome} origine={await origineSito()} />
     </section>
   );
 }
