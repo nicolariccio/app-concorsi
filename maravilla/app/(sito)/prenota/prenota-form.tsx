@@ -107,7 +107,7 @@ export function PrenotaForm({ oggi, maxPersone }: { oggi: string; maxPersone: nu
         <input id="telefono" name="telefono" type="tel" required className="campo" autoComplete="tel" />
         {err("telefono")}
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-4">
         <div>
           <label htmlFor="data" className="etichetta">Data</label>
           <input id="data" name="data" type="date" min={oggi} required className="campo" value={data} onChange={(e) => { setData(e.target.value); setOra(""); }} />

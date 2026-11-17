@@ -103,7 +103,7 @@ export function AzioniPrenotazione({
             invia({ azione: "modifica", data, ora, persone: n });
           }}
         >
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-4">
             <div>
               <label htmlFor="m-data" className="etichetta">Data</label>
               <input id="m-data" type="date" min={oggi} required className="campo" value={data} onChange={(e) => { setData(e.target.value); setOra(""); }} />

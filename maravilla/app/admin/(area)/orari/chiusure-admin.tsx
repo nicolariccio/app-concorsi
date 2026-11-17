@@ -48,7 +48,7 @@ export function ChiusureAdmin({ chiusure }: { chiusure: Chiusura[] }) {
           }
         }}
       >
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-3">
           <div>
             <label htmlFor="ch-dal" className="etichetta">Dal</label>
             <input id="ch-dal" type="date" className="campo" value={dal} onChange={(e) => setDal(e.target.value)} />

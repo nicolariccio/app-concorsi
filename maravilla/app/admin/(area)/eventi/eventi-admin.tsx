@@ -24,7 +24,7 @@ function Scheda({ iniziale, nuovo, ordine, onFatto }: { iniziale?: Evento; nuovo
         }
       }}
     >
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-3">
         <div>
           <label htmlFor={`t${id}`} className="etichetta">Tipo</label>
           <select id={`t${id}`} className="campo" value={v.tipo} onChange={(e) => setV({ ...v, tipo: e.target.value as Bozza["tipo"] })}>
