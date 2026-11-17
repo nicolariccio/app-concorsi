@@ -24,8 +24,8 @@ export default function SitoLayout({ children }: { children: React.ReactNode }) 
           </nav>
         </div>
       </header>
-      <main className="mx-auto max-w-2xl px-5 pb-28 pt-8 sm:pb-12">{children}</main>
-      <nav aria-label="Principale" className="fixed inset-x-0 bottom-0 z-10 flex h-[68px] border-t border-bordo bg-notte sm:hidden">
+      <main className="mx-auto max-w-2xl px-5 pb-32 pt-8 sm:pb-12">{children}</main>
+      <nav aria-label="Principale" className="fixed inset-x-0 bottom-0 z-10 flex h-[calc(68px+env(safe-area-inset-bottom))] border-t border-bordo bg-notte pb-[env(safe-area-inset-bottom)] sm:hidden">
         {voci.map((v) => (
           <Link key={v.href} href={v.href} className="flex flex-1 items-center justify-center text-sm font-medium text-salvia active:text-oro">
             {v.testo}

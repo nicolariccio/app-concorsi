@@ -10,8 +10,9 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Maravilla · cotoletteria alcolica",
   description: "La prima cotoletteria alcolica d'Italia. Mugnano di Napoli.",
+  appleWebApp: { capable: true, title: "Maravilla", statusBarStyle: "black" },
 };
-export const viewport: Viewport = { themeColor: "#0E1F11", width: "device-width", initialScale: 1 };
+export const viewport: Viewport = { themeColor: "#0E1F11", width: "device-width", initialScale: 1, viewportFit: "cover" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
