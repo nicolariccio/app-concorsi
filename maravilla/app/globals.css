@@ -13,5 +13,9 @@ h1, h2, h3 { @apply font-display; }
   .scheda { @apply rounded-2xl border border-bordo bg-carta p-5; }
   .campo { @apply min-h-[48px] w-full rounded-xl border border-bordo bg-carta px-4 text-base text-panna outline-none placeholder:text-salvia focus:border-oro; }
   .etichetta { @apply mb-1 block text-sm font-medium text-salvia; }
+  /* Su iPhone data, ora e menu a tendina ignorano altezza e larghezza: si tolgono i loro stili nativi. */
+  select.campo, input[type="date"].campo, input[type="time"].campo { -webkit-appearance: none; appearance: none; height: 48px; min-width: 0; max-width: 100%; display: block; }
+  input[type="date"].campo::-webkit-date-and-time-value, input[type="time"].campo::-webkit-date-and-time-value { text-align: left; min-height: 1.5em; }
+  select.campo { padding-right: 2.5rem; background-repeat: no-repeat; background-position: right 1rem center; background-size: 1rem; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 4.5l4 4 4-4' fill='none' stroke='%23B5C2B3' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); }
   .errore { @apply mt-1 text-sm text-errore; }
 }

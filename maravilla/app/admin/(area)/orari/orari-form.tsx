@@ -30,7 +30,7 @@ export function OrariForm({ iniziali }: { iniziali: Orario[] }) {
             </label>
           </div>
           {!o.chiuso && (
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-3">
               <div>
                 <label htmlFor={`a${o.giorno}`} className="etichetta">Apre</label>
                 <input id={`a${o.giorno}`} type="time" className="campo" value={o.apertura} onChange={(e) => cambia(o.giorno, { apertura: e.target.value })} />

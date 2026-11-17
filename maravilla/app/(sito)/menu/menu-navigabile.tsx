@@ -22,7 +22,7 @@ export function MenuNavigabile({ gruppi }: { gruppi: Gruppo[] }) {
   return (
     <div className="space-y-5">
       {gruppi.length > 1 && (
-        <div className="grid grid-cols-2 gap-3" role="group" aria-label="Food o Drink">
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-3" role="group" aria-label="Food o Drink">
           {gruppi.map((g) => (
             <button
               key={g.gruppo}

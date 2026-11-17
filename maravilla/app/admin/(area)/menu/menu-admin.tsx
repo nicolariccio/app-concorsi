@@ -89,7 +89,7 @@ function PiattoForm({
         <summary className="min-h-[36px] cursor-pointer py-1 text-sm text-salvia">
           Allergeni{v.allergeni.length > 0 ? ` (${v.allergeni.length})` : ""}
         </summary>
-        <div className="grid grid-cols-2 gap-x-3 pb-2">
+        <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-x-3 pb-2">
           {ALLERGENI.map((a) => (
             <label key={a.id} className="flex min-h-[44px] items-center gap-2 text-sm">
               <input
