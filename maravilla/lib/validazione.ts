@@ -25,10 +25,13 @@ export function validaLocale(x: unknown): Risultato<Obj> {
   if (instagram && !/^https:\/\//.test(instagram)) e.instagram = "Inserisci il link completo (https://…)";
   const telefono = testo(r.telefono, 20);
   if (telefono && !/^\+?[0-9 ]{6,15}$/.test(telefono)) e.telefono = "Numero non valido";
+  const copertiTesto = String(r.coperti_max ?? "").trim();
+  const coperti = copertiTesto === "" ? null : Number(copertiTesto);
+  if (coperti !== null && (!Number.isInteger(coperti) || coperti < 1 || coperti > 500)) e.coperti_max = "Inserisci un numero da 1 a 500, oppure lascia vuoto";
   if (Object.keys(e).length) return { ok: false, errori: e };
   return {
     ok: true,
-    valore: { id: 1, nome, claim: testo(r.claim, 120), indirizzo: testo(r.indirizzo, 160), telefono, instagram, note: testo(r.note, 400) },
+    valore: { id: 1, coperti_max: coperti, nome, claim: testo(r.claim, 120), indirizzo: testo(r.indirizzo, 160), telefono, instagram, note: testo(r.note, 400) },
   };
 }
 
@@ -120,4 +123,20 @@ export function validaStato(x: unknown): Risultato<{ id: string; stato: string }
   if (!UUID.test(id)) return { ok: false, errori: { id: "Id non valido" } };
   if (!["in_attesa", "confermata", "annullata"].includes(stato)) return { ok: false, errori: { stato: "Stato non valido" } };
   return { ok: true, valore: { id, stato } };
+}
+
+const RE_DATA = /^\d{4}-\d{2}-\d{2}$/;
+
+export function validaChiusura(x: unknown): Risultato<Obj> {
+  const r = obj(x);
+  const e: Record<string, string> = {};
+  const id = idOpzionale(r.id);
+  if (id === null) e.id = "Id non valido";
+  const dal = String(r.dal ?? "");
+  const al = String(r.al ?? dal);
+  if (!RE_DATA.test(dal) || Number.isNaN(Date.parse(dal))) e.dal = "Data non valida";
+  if (!RE_DATA.test(al) || Number.isNaN(Date.parse(al))) e.al = "Data non valida";
+  else if (!e.dal && al < dal) e.al = "La fine non può essere prima dell'inizio";
+  if (Object.keys(e).length) return { ok: false, errori: e };
+  return { ok: true, valore: { ...(id ? { id } : {}), dal, al, motivo: testo(r.motivo, 80) } };
 }

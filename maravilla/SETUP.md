@@ -39,3 +39,18 @@ Per generare `SESSION_SECRET`, da un terminale: `openssl rand -hex 32`.
 - La `service_role key` e `ADMIN_PASSWORD` non vanno mai messe nel codice né condivise in chat.
 - Cambiare `SESSION_SECRET` disconnette subito tutti gli accessi all'admin.
 - Le prenotazioni contengono nomi e telefoni dei clienti: l'accesso è solo dall'admin.
+
+## Avvisi email per le prenotazioni (facoltativo)
+
+1. Crea un account gratuito su resend.com e, in **API Keys**, crea una chiave.
+2. In Vercel aggiungi due variabili d'ambiente:
+   - `RESEND_API_KEY`: la chiave appena creata
+   - `NOTIFICA_EMAIL`: l'email dove vuoi ricevere gli avvisi. Con il mittente di prova di Resend può essere solo l'email con cui ti sei registrato.
+3. Fai **Redeploy**. Da quel momento ogni nuova prenotazione manda una email al gestore.
+
+Per usare un indirizzo tuo come mittente (es. `prenotazioni@tuodominio.it`) devi verificare il dominio su Resend e impostare `EMAIL_MITTENTE`.
+Se l'email non parte, la prenotazione viene comunque salvata.
+
+## Aggiornamenti del database
+
+Ogni volta che arriva una nuova migrazione in `supabase/migrations/`, eseguila nello SQL Editor di Supabase **prima** di pubblicare il codice che la usa.

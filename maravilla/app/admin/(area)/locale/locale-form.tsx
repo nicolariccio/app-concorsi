@@ -4,7 +4,10 @@ import { useState } from "react";
 import type { Locale } from "@/lib/tipi";
 import { useAzione } from "../azione";
 
-const CAMPI: { chiave: keyof Locale; etichetta: string; tipo?: string; lungo?: boolean; aiuto?: string }[] = [
+type Campo = Exclude<keyof Locale, "coperti_max">;
+type Valori = Omit<Locale, "coperti_max"> & { coperti_max: string };
+
+const CAMPI: { chiave: Campo; etichetta: string; tipo?: string; lungo?: boolean; aiuto?: string }[] = [
   { chiave: "nome", etichetta: "Nome del locale" },
   { chiave: "claim", etichetta: "Frase sotto il logo", aiuto: "Es. La prima cotoletteria alcolica d'Italia" },
   { chiave: "indirizzo", etichetta: "Indirizzo", aiuto: "Compare in Home con il link alle indicazioni" },
@@ -14,7 +17,7 @@ const CAMPI: { chiave: keyof Locale; etichetta: string; tipo?: string; lungo?: b
 ];
 
 export function LocaleForm({ iniziale }: { iniziale: Locale }) {
-  const [v, setV] = useState<Locale>(iniziale);
+  const [v, setV] = useState<Valori>({ ...iniziale, coperti_max: iniziale.coperti_max?.toString() ?? "" });
   const { occupato, errori, esegui } = useAzione();
 
   return (
@@ -37,6 +40,12 @@ export function LocaleForm({ iniziale }: { iniziale: Locale }) {
           {errori[c.chiave] && <p className="errore">{errori[c.chiave]}</p>}
         </div>
       ))}
+      <div>
+        <label htmlFor="coperti_max" className="etichetta">Coperti massimi per fascia oraria</label>
+        <input id="coperti_max" inputMode="numeric" className="campo" placeholder="Nessun limite" value={v.coperti_max} onChange={(e) => setV({ ...v, coperti_max: e.target.value })} />
+        <p className="mt-1 text-xs text-salvia">Oltre questo numero di persone in una fascia (es. 20:30) il sito non accetta altre prenotazioni. Lascia vuoto per non avere limiti.</p>
+        {errori.coperti_max && <p className="errore">{errori.coperti_max}</p>}
+      </div>
       <button type="submit" disabled={occupato} className="bottone w-full">{occupato ? "Salvo…" : "Salva"}</button>
     </form>
   );

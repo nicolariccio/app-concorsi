@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { NonConfigurato, store, type Riga } from "./store";
+import type { Chiusura } from "./disponibilita";
 import type { Categoria, Evento, Locale, Orario, Piatto, PrenotazioneRiga } from "./tipi";
 
 const porOrdine = <T extends { ordine: number }>(a: T[]) => [...a].sort((x, y) => x.ordine - y.ordine);
@@ -16,7 +17,7 @@ async function oVuoto<T>(f: () => Promise<T>, vuoto: T): Promise<T> {
   }
 }
 
-export const localeVuoto: Locale = { nome: "Maravilla", claim: "", indirizzo: "", telefono: "", instagram: "", note: "" };
+export const localeVuoto: Locale = { nome: "Maravilla", claim: "", indirizzo: "", telefono: "", instagram: "", note: "", coperti_max: null };
 
 export function getLocale(): Promise<Locale> {
   return oVuoto(async () => {
@@ -53,6 +54,10 @@ export async function getMenuPubblico() {
   return (["food", "drink"] as const)
     .map((g) => ({ gruppo: g, categorie: conPiatti.filter((c) => c.gruppo === g) }))
     .filter((g) => g.categorie.length > 0);
+}
+
+export function getChiusure(): Promise<Chiusura[]> {
+  return oVuoto(async () => ((await store().lista("chiusure")) as unknown as Chiusura[]).sort((a, b) => a.dal.localeCompare(b.dal)), []);
 }
 
 export function getPrenotazioni(): Promise<PrenotazioneRiga[]> {

@@ -19,5 +19,5 @@ export default async function Prenota() {
       </div>
     );
   }
-  return <PrenotaForm orari={orari} oggi={oggiRoma()} maxPersone={MAX_PERSONE} />;
+  return <PrenotaForm oggi={oggiRoma()} maxPersone={MAX_PERSONE} />;
 }

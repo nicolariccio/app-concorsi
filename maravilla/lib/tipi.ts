@@ -5,6 +5,7 @@ export type Locale = {
   telefono: string;
   instagram: string;
   note: string;
+  coperti_max: number | null;
 };
 
 export type Orario = {

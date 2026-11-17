@@ -4,6 +4,7 @@ import { aggiornaStato, eliminaRiga, nuovoId, salvaRighe } from "@/lib/dati";
 import { NonConfigurato } from "@/lib/store";
 import {
   validaCategoria,
+  validaChiusura,
   validaEvento,
   validaLocale,
   validaOrari,
@@ -21,8 +22,9 @@ const SALVABILI: Record<string, { tabella: string; chiave: string; valida: (x: u
   categorie: { tabella: "categorie_menu", chiave: "id", valida: validaCategoria, nuovoId: true },
   piatti: { tabella: "piatti", chiave: "id", valida: validaPiatto, nuovoId: true },
   eventi: { tabella: "eventi", chiave: "id", valida: validaEvento, nuovoId: true },
+  chiusure: { tabella: "chiusure", chiave: "id", valida: validaChiusura, nuovoId: true },
 };
-const ELIMINABILI: Record<string, string> = { categorie: "categorie_menu", piatti: "piatti", eventi: "eventi" };
+const ELIMINABILI: Record<string, string> = { categorie: "categorie_menu", piatti: "piatti", eventi: "eventi", chiusure: "chiusure" };
 
 async function controlli(): Promise<NextResponse | null> {
   if (!(await isAdmin())) return NextResponse.json({ messaggio: "Accesso richiesto" }, { status: 401 });

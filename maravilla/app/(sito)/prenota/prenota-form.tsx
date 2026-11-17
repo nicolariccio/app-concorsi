@@ -1,22 +1,34 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { giornoSettimana } from "@/lib/datetime";
-import { fasceOrarie } from "@/lib/orari";
-import type { Orario } from "@/lib/tipi";
+import { useEffect, useState } from "react";
+import type { Disponibilita } from "@/lib/disponibilita";
 
 type Stato = "idle" | "invio" | "ok" | "errore";
 
-export function PrenotaForm({ orari, oggi, maxPersone }: { orari: Orario[]; oggi: string; maxPersone: number }) {
+export function PrenotaForm({ oggi, maxPersone }: { oggi: string; maxPersone: number }) {
   const [stato, setStato] = useState<Stato>("idle");
   const [errori, setErrori] = useState<Record<string, string>>({});
   const [messaggio, setMessaggio] = useState("");
   const [data, setData] = useState("");
   const [ora, setOra] = useState("");
 
-  const giorno = data ? orari.find((o) => o.giorno === giornoSettimana(data)) : undefined;
-  const fasce = useMemo(() => fasceOrarie(giorno), [giorno]);
-  const chiuso = data !== "" && fasce.length === 0;
+  const [disp, setDisp] = useState<Disponibilita | null>(null);
+
+  // Ogni volta che cambia la data si chiedono al server le fasce libere di quel giorno.
+  useEffect(() => {
+    if (!data) return;
+    let attuale = true;
+    fetch(`/api/disponibilita?data=${data}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => attuale && setDisp(d))
+      .catch(() => attuale && setDisp(null));
+    return () => {
+      attuale = false;
+    };
+  }, [data]);
+
+  const fasce = data ? (disp?.fasce ?? []) : [];
+  const chiuso = data !== "" && disp !== null && disp.fasce.length === 0;
 
   async function invia(ev: React.FormEvent<HTMLFormElement>) {
     ev.preventDefault();
@@ -76,12 +88,12 @@ export function PrenotaForm({ orari, oggi, maxPersone }: { orari: Orario[]; oggi
           <label htmlFor="ora" className="etichetta">Ora</label>
           <select id="ora" name="ora" required className="campo" value={ora} onChange={(e) => setOra(e.target.value)} disabled={fasce.length === 0}>
             <option value="" disabled>{data ? (chiuso ? "Chiuso" : "Scegli") : "Prima la data"}</option>
-            {fasce.map((f) => <option key={f}>{f}</option>)}
+            {fasce.map((f) => <option key={f.ora} value={f.ora} disabled={!f.libera}>{f.libera ? f.ora : `${f.ora} · al completo`}</option>)}
           </select>
           {err("ora")}
         </div>
       </div>
-      {chiuso && <p className="errore">Quel giorno siamo chiusi.</p>}
+      {chiuso && <p className="errore">Quel giorno siamo chiusi{disp?.motivo ? `: ${disp.motivo}` : ""}.</p>}
       <div>
         <label htmlFor="persone" className="etichetta">Persone</label>
         <input id="persone" name="persone" type="number" min={1} max={maxPersone} defaultValue={2} required className="campo" />
