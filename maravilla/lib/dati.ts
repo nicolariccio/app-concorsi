@@ -18,7 +18,7 @@ async function oVuoto<T>(f: () => Promise<T>, vuoto: T): Promise<T> {
   }
 }
 
-export const localeVuoto: Locale = { nome: "Maravilla", claim: "", indirizzo: "", telefono: "", instagram: "", note: "", coperti_max: null, foto_home: "" };
+export const localeVuoto: Locale = { nome: "Maravilla", claim: "", indirizzo: "", telefono: "", instagram: "", note: "", coperti_max: null, foto_home: "", fedelta_timbri: null, fedelta_premio: "", fedelta_regola: "" };
 
 export function getLocale(): Promise<Locale> {
   return oVuoto(async () => {
@@ -82,4 +82,41 @@ export async function aggiornaStato(id: string, stato: string) {
 }
 export async function inserisciPrenotazione(p: Riga) {
   await store().inserisci("prenotazioni", { id: randomUUID(), creata_il: new Date().toISOString(), stato: "in_attesa", ...p });
+}
+
+// --- Carta fedeltà. Letture che NON nascondono gli errori: "carta non trovata" non deve voler dire "database rotto".
+import { RE_CODICE } from "./fedelta";
+import type { CartaFedelta } from "./tipi";
+
+export async function trovaCartaPerCodice(codice: string): Promise<CartaFedelta | null> {
+  if (!RE_CODICE.test(codice)) return null;
+  return ((await store().cerca("carte_fedelta", "codice", codice, 1))[0] as unknown as CartaFedelta) ?? null;
+}
+
+export async function trovaCartaPerTelefono(telefono: string): Promise<CartaFedelta | null> {
+  return ((await store().cerca("carte_fedelta", "telefono", telefono, 1))[0] as unknown as CartaFedelta) ?? null;
+}
+
+export async function trovaCartaPerId(id: string): Promise<CartaFedelta | null> {
+  return ((await store().cerca("carte_fedelta", "id", id, 1))[0] as unknown as CartaFedelta) ?? null;
+}
+
+export async function listaCarte(): Promise<CartaFedelta[]> {
+  const righe = (await store().lista("carte_fedelta")) as unknown as CartaFedelta[];
+  return righe.sort((a, b) => a.nome.localeCompare(b.nome, "it"));
+}
+
+export async function creaCarta(c: { codice: string; nome: string; telefono: string }): Promise<void> {
+  const ora = new Date().toISOString();
+  await store().inserisci("carte_fedelta", { id: randomUUID(), ...c, consenso_il: ora, timbri: 0, premi: 0, ultimo_timbro: null, creata_il: ora });
+}
+
+/** Aggiorna solo se timbri e premi sono ancora quelli letti (due tocchi insieme non si sommano male). */
+export async function aggiornaCartaSe(carta: CartaFedelta, modifiche: Riga): Promise<boolean> {
+  const n = await store().aggiornaSe("carte_fedelta", carta.id, { timbri: carta.timbri, premi: carta.premi }, modifiche);
+  return n === 1;
+}
+
+export async function eliminaCarta(id: string): Promise<void> {
+  await store().elimina("carte_fedelta", "id", id);
 }

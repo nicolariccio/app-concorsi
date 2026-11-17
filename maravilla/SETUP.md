@@ -60,3 +60,13 @@ Ogni volta che arriva una nuova migrazione in `supabase/migrations/`, eseguila n
 La migrazione `0005_foto.sql` crea da sola il contenitore delle foto ("foto", pubblico) nello Storage di Supabase.
 Dal pannello: la foto della Home si carica in **Info**, quella di ogni piatto in **Menu**.
 Le foto vengono ridimensionate dal telefono prima dell'invio (lato lungo 1600 px, circa 100-300 KB). Una foto sostituita o tolta resta nello Storage: con il piano gratuito (1 GB) ci sono migliaia di foto di margine.
+
+## Carta fedeltà
+
+1. Esegui `supabase/migrations/0006_carta_fedelta.sql` nello SQL Editor di Supabase.
+2. Nel pannello **Info**, sezione "Carta fedeltà", imposta i timbri per il premio e il premio. Finché sono vuoti la carta non compare sul sito.
+3. I clienti la creano da `/carta` (nome, telefono, consenso). La carta è un link segreto: va salvata tra i preferiti o sulla schermata Home.
+4. Al bancone il personale inquadra il QR della carta con la fotocamera: si apre la carta nel pannello (serve l'accesso admin) e si preme **Aggiungi timbro**.
+5. Un cliente che perde il link: in **Carta** cerca per nome o telefono e usa "Invia il link su WhatsApp".
+
+Chi dà i timbri usa la password admin. Il testo dell'informativa privacy (`/privacy`) è una bozza da far rivedere prima di aprire al pubblico.

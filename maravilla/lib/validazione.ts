@@ -26,6 +26,11 @@ export function validaLocale(x: unknown): Risultato<Obj> {
   if (instagram && !/^https:\/\//.test(instagram)) e.instagram = "Inserisci il link completo (https://…)";
   const telefono = testo(r.telefono, 20);
   if (telefono && !/^\+?[0-9 ]{6,15}$/.test(telefono)) e.telefono = "Numero non valido";
+  const timbriTesto = String(r.fedelta_timbri ?? "").trim();
+  const timbri = timbriTesto === "" ? null : Number(timbriTesto);
+  if (timbri !== null && (!Number.isInteger(timbri) || timbri < 1 || timbri > 30)) e.fedelta_timbri = "Inserisci un numero da 1 a 30, oppure lascia vuoto";
+  const premio = testo(r.fedelta_premio, 100);
+  if ((timbri === null) !== (premio === "")) e.fedelta_premio = "Per attivare la carta servono sia i timbri sia il premio (o lasciali vuoti tutti e due)";
   const fotoHome = String(r.foto_home ?? "");
   if (fotoHome && !RE_FOTO.test(fotoHome)) e.foto_home = "Foto non valida";
   const copertiTesto = String(r.coperti_max ?? "").trim();
@@ -34,7 +39,7 @@ export function validaLocale(x: unknown): Risultato<Obj> {
   if (Object.keys(e).length) return { ok: false, errori: e };
   return {
     ok: true,
-    valore: { id: 1, coperti_max: coperti, foto_home: fotoHome, nome, claim: testo(r.claim, 120), indirizzo: testo(r.indirizzo, 160), telefono, instagram, note: testo(r.note, 400) },
+    valore: { id: 1, coperti_max: coperti, foto_home: fotoHome, fedelta_timbri: timbri, fedelta_premio: premio, fedelta_regola: testo(r.fedelta_regola, 200), nome, claim: testo(r.claim, 120), indirizzo: testo(r.indirizzo, 160), telefono, instagram, note: testo(r.note, 400) },
   };
 }
 
