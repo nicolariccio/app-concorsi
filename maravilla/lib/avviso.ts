@@ -1,14 +1,14 @@
 import "server-only";
-import { emailNuovaPrenotazione } from "./emailTesto";
+import { emailPrenotazione, type TipoAvviso } from "./emailTesto";
 
 type Pren = { nome: string; telefono: string; data: string; ora: string; persone: number; note: string };
 
 /** Avvisa il gestore via email (Resend). Non fa mai fallire la prenotazione. */
-export async function avvisaGestore(p: Pren, locale: string): Promise<void> {
+export async function avvisaGestore(p: Pren, locale: string, tipo: TipoAvviso = "nuova"): Promise<void> {
   const chiave = process.env.RESEND_API_KEY;
   const a = process.env.NOTIFICA_EMAIL;
   if (!chiave || !a) return;
-  const { subject, text } = emailNuovaPrenotazione(p, locale);
+  const { subject, text } = emailPrenotazione(tipo, p, locale);
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",

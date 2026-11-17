@@ -5,9 +5,9 @@ import { linkWhatsApp } from "@/lib/whatsapp";
 import type { PrenotazioneRiga } from "@/lib/tipi";
 import { useAzione } from "./azione";
 
-function Riga({ p, nomeLocale }: { p: PrenotazioneRiga; nomeLocale: string }) {
+function Riga({ p, nomeLocale, origine }: { p: PrenotazioneRiga; nomeLocale: string; origine: string }) {
   const { occupato, esegui } = useAzione();
-  const whatsapp = p.stato === "confermata" ? linkWhatsApp(p, nomeLocale) : null;
+  const whatsapp = p.stato === "confermata" ? linkWhatsApp(p, nomeLocale, p.codice ? `${origine}/prenotazione/${p.codice}` : undefined) : null;
   return (
     <li className="scheda space-y-3">
       <div className="flex items-baseline justify-between gap-3">
@@ -46,7 +46,7 @@ function Riga({ p, nomeLocale }: { p: PrenotazioneRiga; nomeLocale: string }) {
   );
 }
 
-export function PrenotazioniAdmin({ righe, oggi, nomeLocale }: { righe: PrenotazioneRiga[]; oggi: string; nomeLocale: string }) {
+export function PrenotazioniAdmin({ righe, oggi, nomeLocale, origine }: { righe: PrenotazioneRiga[]; oggi: string; nomeLocale: string; origine: string }) {
   if (righe.length === 0) return <p className="text-salvia">Nessuna prenotazione in arrivo.</p>;
   const giorni = [...new Set(righe.map((r) => r.data))];
   return (
@@ -56,7 +56,7 @@ export function PrenotazioniAdmin({ righe, oggi, nomeLocale }: { righe: Prenotaz
           <h2 className="text-2xl font-semibold text-oro">
             {g === oggi ? "Oggi" : `${NOMI_GIORNI[giornoSettimana(g)]} ${g.split("-").reverse().slice(0, 2).join("/")}`}
           </h2>
-          <ul className="space-y-3">{righe.filter((r) => r.data === g).map((p) => <Riga key={p.id} p={p} nomeLocale={nomeLocale} />)}</ul>
+          <ul className="space-y-3">{righe.filter((r) => r.data === g).map((p) => <Riga key={p.id} p={p} nomeLocale={nomeLocale} origine={origine} />)}</ul>
         </div>
       ))}
     </div>

@@ -58,6 +58,7 @@ export type PrenotazioneRiga = {
   persone: number;
   note: string;
   stato: Stato;
+  codice?: string | null;
 };
 
 export type CartaFedelta = {

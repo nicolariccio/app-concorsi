@@ -70,3 +70,11 @@ Le foto vengono ridimensionate dal telefono prima dell'invio (lato lungo 1600 px
 5. Un cliente che perde il link: in **Carta** cerca per nome o telefono e usa "Invia il link su WhatsApp".
 
 Chi dà i timbri usa la password admin. Il testo dell'informativa privacy (`/privacy`) è una bozza da far rivedere prima di aprire al pubblico.
+
+## Il cliente cambia o annulla la prenotazione
+
+1. Esegui `supabase/migrations/0007_prenotazioni_link.sql` nello SQL Editor di Supabase.
+2. Dopo aver prenotato, il cliente vede un link personale (`/prenotazione/...`). Anche il messaggio WhatsApp di conferma lo contiene.
+3. Dal link può cambiare data, ora e persone, oppure annullare, fino a 3 ore prima. Dopo, la pagina mostra il telefono del locale.
+4. Una modifica torna "in attesa" e va confermata di nuovo. Se hai attivato le email, ricevi un avviso per ogni modifica o annullamento.
+5. Le prenotazioni fatte prima di questa funzione non hanno il link.

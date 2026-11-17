@@ -1,11 +1,23 @@
 import { dataEstesa } from "./whatsapp";
 
 type Pren = { nome: string; telefono: string; data: string; ora: string; persone: number; note: string };
+export type TipoAvviso = "nuova" | "modificata" | "annullata";
+
+const TITOLI: Record<TipoAvviso, string> = {
+  nuova: "Nuova richiesta di prenotazione",
+  modificata: "Prenotazione MODIFICATA dal cliente",
+  annullata: "Prenotazione ANNULLATA dal cliente",
+};
+const CODA: Record<TipoAvviso, string> = {
+  nuova: "Aprila nel pannello per confermarla.",
+  modificata: "È tornata in attesa: aprila nel pannello per confermarla di nuovo.",
+  annullata: "Il tavolo è di nuovo libero.",
+};
 
 /** Contenuto dell'email al gestore. */
-export function emailNuovaPrenotazione(p: Pren, locale: string) {
+export function emailPrenotazione(tipo: TipoAvviso, p: Pren, locale: string) {
   const righe = [
-    `Nuova richiesta di prenotazione per ${locale}.`,
+    `${TITOLI[tipo]} per ${locale}.`,
     "",
     `Quando: ${dataEstesa(p.data)} alle ${p.ora}`,
     `Persone: ${p.persone}`,
@@ -13,7 +25,10 @@ export function emailNuovaPrenotazione(p: Pren, locale: string) {
     `Telefono: ${p.telefono}`,
     ...(p.note ? [`Note: ${p.note}`] : []),
     "",
-    "Aprila nel pannello per confermarla.",
+    CODA[tipo],
   ];
-  return { subject: `Prenotazione: ${dataEstesa(p.data)} ${p.ora}, ${p.persone} persone`, text: righe.join("\n") };
+  const prefisso = tipo === "nuova" ? "Prenotazione" : tipo === "modificata" ? "Modificata" : "Annullata";
+  return { subject: `${prefisso}: ${dataEstesa(p.data)} ${p.ora}, ${p.persone} persone`, text: righe.join("\n") };
 }
+
+export const emailNuovaPrenotazione = (p: Pren, locale: string) => emailPrenotazione("nuova", p, locale);

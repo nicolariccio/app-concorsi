@@ -15,13 +15,14 @@ export function dataEstesa(data: string): string {
   return `${NOMI_GIORNI[giornoSettimana(data)].toLowerCase()} ${Number(g)} ${mesi[Number(m) - 1]}`;
 }
 
-export function messaggioConferma(p: { nome: string; data: string; ora: string; persone: number }, locale: string): string {
+export function messaggioConferma(p: { nome: string; data: string; ora: string; persone: number }, locale: string, linkModifica?: string): string {
   const persone = p.persone === 1 ? "1 persona" : `${p.persone} persone`;
-  return `Ciao ${p.nome}, la tua prenotazione da ${locale} per ${dataEstesa(p.data)} alle ${p.ora}, ${persone}, è confermata. A presto!`;
+  const base = `Ciao ${p.nome}, la tua prenotazione da ${locale} per ${dataEstesa(p.data)} alle ${p.ora}, ${persone}, è confermata.`;
+  return linkModifica ? `${base} Per cambiarla o annullarla: ${linkModifica} A presto!` : `${base} A presto!`;
 }
 
 /** Link che apre WhatsApp con il messaggio già scritto; null se il numero non è valido. */
-export function linkWhatsApp(p: { nome: string; telefono: string; data: string; ora: string; persone: number }, locale: string): string | null {
+export function linkWhatsApp(p: { nome: string; telefono: string; data: string; ora: string; persone: number }, locale: string, linkModifica?: string): string | null {
   const n = numeroWhatsApp(p.telefono);
-  return n ? `https://wa.me/${n}?text=${encodeURIComponent(messaggioConferma(p, locale))}` : null;
+  return n ? `https://wa.me/${n}?text=${encodeURIComponent(messaggioConferma(p, locale, linkModifica))}` : null;
 }

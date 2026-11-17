@@ -80,12 +80,27 @@ export async function eliminaRiga(tabella: string, id: string) {
 export async function aggiornaStato(id: string, stato: string) {
   await store().aggiorna("prenotazioni", "id", id, { stato });
 }
-export async function inserisciPrenotazione(p: Riga) {
-  await store().inserisci("prenotazioni", { id: randomUUID(), creata_il: new Date().toISOString(), stato: "in_attesa", ...p });
+/** Salva la prenotazione e restituisce il codice segreto del suo link. */
+export async function inserisciPrenotazione(p: Riga): Promise<string> {
+  const codice = generaCodice();
+  await store().inserisci("prenotazioni", { id: randomUUID(), creata_il: new Date().toISOString(), stato: "in_attesa", codice, ...p });
+  return codice;
+}
+
+// Letture che non nascondono gli errori (come per la carta fedeltà).
+export async function trovaPrenotazionePerCodice(codice: string): Promise<PrenotazioneRiga | null> {
+  if (!RE_CODICE.test(codice)) return null;
+  return ((await store().cerca("prenotazioni", "codice", codice, 1))[0] as unknown as PrenotazioneRiga) ?? null;
+}
+
+/** Aggiorna solo se la prenotazione è ancora com'era quando l'abbiamo letta. */
+export async function aggiornaPrenotazioneSe(p: PrenotazioneRiga, modifiche: Riga): Promise<boolean> {
+  const n = await store().aggiornaSe("prenotazioni", p.id, { stato: p.stato, data: p.data, ora: p.ora, persone: p.persone }, modifiche);
+  return n === 1;
 }
 
 // --- Carta fedeltà. Letture che NON nascondono gli errori: "carta non trovata" non deve voler dire "database rotto".
-import { RE_CODICE } from "./fedelta";
+import { generaCodice, RE_CODICE } from "./fedelta";
 import type { CartaFedelta } from "./tipi";
 
 export async function trovaCartaPerCodice(codice: string): Promise<CartaFedelta | null> {
