@@ -1,5 +1,6 @@
 // Validazione dei dati inviati dal pannello admin. Funzioni pure, testate.
 import { ID_ALLERGENI } from "./allergeni";
+import { PIATTAFORME, validaLinkConsegna } from "./consegna";
 import { RE_FOTO } from "./fotoUrl";
 import { oraValida } from "./orari";
 import { parsePrezzo } from "./prezzo";
@@ -31,6 +32,12 @@ export function validaLocale(x: unknown): Risultato<Obj> {
   if (timbri !== null && (!Number.isInteger(timbri) || timbri < 1 || timbri > 30)) e.fedelta_timbri = "Inserisci un numero da 1 a 30, oppure lascia vuoto";
   const premio = testo(r.fedelta_premio, 100);
   if ((timbri === null) !== (premio === "")) e.fedelta_premio = "Per attivare la carta servono sia i timbri sia il premio (o lasciali vuoti tutti e due)";
+  const consegna: Record<string, string> = {};
+  for (const p of PIATTAFORME) {
+    const esito = validaLinkConsegna(p, r[p.campo]);
+    if (esito.ok) consegna[p.campo] = esito.link;
+    else e[p.campo] = esito.errore;
+  }
   const fotoHome = String(r.foto_home ?? "");
   if (fotoHome && !RE_FOTO.test(fotoHome)) e.foto_home = "Foto non valida";
   const copertiTesto = String(r.coperti_max ?? "").trim();
@@ -39,7 +46,7 @@ export function validaLocale(x: unknown): Risultato<Obj> {
   if (Object.keys(e).length) return { ok: false, errori: e };
   return {
     ok: true,
-    valore: { id: 1, coperti_max: coperti, foto_home: fotoHome, fedelta_timbri: timbri, fedelta_premio: premio, fedelta_regola: testo(r.fedelta_regola, 200), nome, claim: testo(r.claim, 120), indirizzo: testo(r.indirizzo, 160), telefono, instagram, note: testo(r.note, 400) },
+    valore: { id: 1, ...consegna, coperti_max: coperti, foto_home: fotoHome, fedelta_timbri: timbri, fedelta_premio: premio, fedelta_regola: testo(r.fedelta_regola, 200), nome, claim: testo(r.claim, 120), indirizzo: testo(r.indirizzo, 160), telefono, instagram, note: testo(r.note, 400) },
   };
 }
 

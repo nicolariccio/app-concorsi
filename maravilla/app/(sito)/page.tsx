@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getEventi, getLocale, getOrari } from "@/lib/dati";
 import { urlFoto } from "@/lib/fotoUrl";
 import { linkMappa, righeOrari } from "@/lib/orariTesto";
+import { OrdinaACasa } from "./ordina-a-casa";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,8 @@ export default async function Home() {
           <Link href="/menu" className="bottone-vuoto">Guarda il menu</Link>
         </div>
       </section>
+
+      <OrdinaACasa locale={locale} />
 
       {fotoHome && (
         // eslint-disable-next-line @next/next/no-img-element

@@ -10,6 +10,8 @@ export type Locale = {
   fedelta_timbri: number | null;
   fedelta_premio: string;
   fedelta_regola: string;
+  link_glovo: string;
+  link_deliveroo: string;
 };
 
 export type Orario = {

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Locale } from "@/lib/tipi";
+import { PIATTAFORME } from "@/lib/consegna";
 import { CampoFoto } from "../campo-foto";
 import { useAzione } from "../azione";
 
@@ -51,6 +52,17 @@ export function LocaleForm({ iniziale, fotoHomeUrl }: { iniziale: Locale; fotoHo
         <p className="mt-1 text-xs text-salvia">Oltre questo numero di persone in una fascia (es. 20:30) il sito non accetta altre prenotazioni. Lascia vuoto per non avere limiti.</p>
         {errori.coperti_max && <p className="errore">{errori.coperti_max}</p>}
       </div>
+      <fieldset className="space-y-4 rounded-2xl border border-bordo p-4">
+        <legend className="px-2 font-display text-2xl font-semibold text-oro">Ordina a casa</legend>
+        <p className="text-sm text-salvia">Incolla il link della tua pagina su Glovo e su Deliveroo: il sito mostra i pulsanti per ordinare. Lascia vuoto quello che non usi.</p>
+        {PIATTAFORME.map((p) => (
+          <div key={p.id}>
+            <label htmlFor={p.campo} className="etichetta">Link {p.nome}</label>
+            <input id={p.campo} type="url" inputMode="url" className="campo" placeholder={p.esempio} value={v[p.campo]} onChange={(e) => setV({ ...v, [p.campo]: e.target.value })} />
+            {errori[p.campo] && <p className="errore">{errori[p.campo]}</p>}
+          </div>
+        ))}
+      </fieldset>
       <fieldset className="space-y-4 rounded-2xl border border-bordo p-4">
         <legend className="px-2 font-display text-2xl font-semibold text-oro">Carta fedeltà</legend>
         <p className="text-sm text-salvia">Per attivarla servono sia i timbri sia il premio. Lasciali vuoti per tenerla spenta: il sito non la mostra.</p>
