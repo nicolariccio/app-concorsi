@@ -83,3 +83,9 @@ Chi dà i timbri usa la password admin. Il testo dell'informativa privacy (`/pri
 
 Nel pannello, **Statistiche**: prenotazioni e coperti degli ultimi 7, 30 o 90 giorni, annullate, prossimi 7 giorni, andamento, giorni della settimana, fasce orarie e carta fedeltà. Sono solo numeri: non ci sono nomi né telefoni.
 Nessuna migrazione. Le statistiche leggono al massimo 1000 prenotazioni per volta (tetto di Supabase): se superi quel numero nel periodo, la pagina lo segnala.
+
+## Ordina a casa (Glovo e Deliveroo)
+
+1. Esegui `supabase/migrations/0008_consegna.sql` nello SQL Editor di Supabase.
+2. Nel pannello **Info**, sezione "Ordina a casa", incolla il link della tua pagina su Glovo e/o su Deliveroo (si copia dal browser o dal pulsante "Condividi" del tuo profilo sulla piattaforma).
+3. Il sito mostra i pulsanti nella Home e in fondo al Menu. Un campo vuoto toglie il pulsante.
