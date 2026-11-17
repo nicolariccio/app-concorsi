@@ -89,3 +89,7 @@ Nessuna migrazione. Le statistiche leggono al massimo 1000 prenotazioni per volt
 1. Esegui `supabase/migrations/0008_consegna.sql` nello SQL Editor di Supabase.
 2. Nel pannello **Info**, sezione "Ordina a casa", incolla il link della tua pagina su Glovo e/o su Deliveroo (si copia dal browser o dal pulsante "Condividi" del tuo profilo sulla piattaforma).
 3. Il sito mostra i pulsanti nella Home e in fondo al Menu. Un campo vuoto toglie il pulsante.
+
+## Minigioco "Cotolette dal cielo"
+
+La pagina `/gioca` (voce "Gioca" nel menu) è un gioco senza premi: si prendono le cotolette (+10) e si evitano le bombe (-25) per 45 secondi. Il record resta sul telefono del cliente. Non servono migrazioni né impostazioni.

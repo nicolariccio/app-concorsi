@@ -2,12 +2,16 @@ import Link from "next/link";
 import { getLocale } from "@/lib/dati";
 import { fedeltaAttiva } from "@/lib/fedelta";
 
+// Il menu in basso dipende dalle impostazioni (es. carta fedeltà): va letto a ogni visita, anche nelle pagine senza dati propri.
+export const dynamic = "force-dynamic";
+
 export default async function SitoLayout({ children }: { children: React.ReactNode }) {
   const voci = [
     { href: "/", testo: "Home" },
     { href: "/menu", testo: "Menu" },
     { href: "/prenota", testo: "Prenota" },
     { href: "/eventi", testo: "Eventi" },
+    { href: "/gioca", testo: "Gioca" },
     ...(fedeltaAttiva(await getLocale()) ? [{ href: "/carta", testo: "Carta" }] : []),
   ];
   return (
