@@ -5,13 +5,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        notte: "#ddd6c6",
-        carta: "#d2cab8",
-        bordo: "#b9b19c",
-        fiamma: "#455733",
-        magenta: "#8a2d2d",
+        notte: "#0E1F11",
+        carta: "#15301A",
+        bordo: "#27432C",
+        linea: "#3C5C42",
+        panna: "#F4EFE3",
+        salvia: "#B5C2B3",
+        oro: "#D8BE82",
+        errore: "#F0A39A",
       },
-      fontFamily: { sans: ["system-ui", "ui-sans-serif", "Segoe UI", "sans-serif"] },
+      fontFamily: {
+        sans: ["Jost", "system-ui", "sans-serif"],
+        display: ['"Cormorant Garamond"', "Georgia", "serif"],
+      },
     },
   },
   plugins: [],

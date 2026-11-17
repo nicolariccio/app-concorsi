@@ -2,12 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: light; }
-body { @apply bg-notte text-[#2a2a26] antialiased; }
+:root { color-scheme: dark; }
+body { @apply bg-notte font-sans text-panna antialiased; }
+h1, h2, h3 { @apply font-display; }
 
 @layer components {
-  .bottone { @apply inline-flex items-center justify-center rounded-full bg-fiamma px-6 py-3 font-semibold text-white transition active:scale-95; }
-  .bottone-vuoto { @apply inline-flex items-center justify-center rounded-full border border-bordo px-6 py-3 font-semibold text-[#2a2a26] transition hover:border-fiamma; }
+  .bottone { @apply inline-flex min-h-[48px] items-center justify-center rounded-full bg-panna px-6 py-3 font-semibold text-notte transition hover:bg-white active:scale-95 disabled:opacity-60; }
+  .bottone-vuoto { @apply inline-flex min-h-[48px] items-center justify-center rounded-full border-[1.5px] border-linea px-6 py-3 font-semibold text-panna transition hover:border-panna active:scale-95 disabled:opacity-60; }
+  .bottone-piccolo { @apply inline-flex min-h-[44px] items-center justify-center rounded-full border-[1.5px] border-linea px-4 text-sm font-semibold text-panna transition hover:border-panna disabled:opacity-60; }
   .scheda { @apply rounded-2xl border border-bordo bg-carta p-5; }
-  .campo { @apply w-full rounded-xl border border-bordo bg-notte px-4 py-3 text-base outline-none focus:border-fiamma; }
+  .campo { @apply min-h-[48px] w-full rounded-xl border border-bordo bg-carta px-4 text-base text-panna outline-none placeholder:text-salvia focus:border-oro; }
+  .etichetta { @apply mb-1 block text-sm font-medium text-salvia; }
+  .errore { @apply mt-1 text-sm text-errore; }
 }

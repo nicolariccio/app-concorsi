@@ -1,0 +1,53 @@
+export type Locale = {
+  nome: string;
+  claim: string;
+  indirizzo: string;
+  telefono: string;
+  instagram: string;
+  note: string;
+};
+
+export type Orario = {
+  giorno: number; // 0 = lunedì … 6 = domenica
+  chiuso: boolean;
+  apertura: string; // HH:MM
+  chiusura: string; // HH:MM, può essere dopo la mezzanotte
+};
+
+export type Categoria = { id: string; nome: string; ordine: number };
+
+export type Piatto = {
+  id: string;
+  categoria_id: string;
+  nome: string;
+  descrizione: string;
+  prezzo_cent: number | null;
+  allergeni: string[];
+  esaurito: boolean;
+  visibile: boolean;
+  ordine: number;
+};
+
+export type Evento = {
+  id: string;
+  tipo: "evento" | "offerta";
+  titolo: string;
+  quando: string;
+  descrizione: string;
+  attivo: boolean;
+  ordine: number;
+};
+
+export type Stato = "in_attesa" | "confermata" | "annullata";
+
+export type PrenotazioneRiga = {
+  id: string;
+  creata_il: string;
+  nome: string;
+  telefono: string;
+  data: string;
+  ora: string;
+  persone: number;
+  note: string;
+  stato: Stato;
+};
