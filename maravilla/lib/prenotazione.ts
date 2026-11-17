@@ -1,4 +1,5 @@
 import { minutiRoma, oggiRoma } from "./datetime";
+import { chiusuraDelGiorno, copertiInFascia, type Chiusura } from "./disponibilita";
 import { fasceOrarie, minutiFascia, orarioDelGiorno } from "./orari";
 import type { Orario } from "./tipi";
 
@@ -18,7 +19,14 @@ export type Esito = { ok: true; valore: Prenotazione } | { ok: false; errori: Re
 const RE_DATA = /^\d{4}-\d{2}-\d{2}$/;
 const RE_TEL = /^\+?[0-9 ]{8,15}$/;
 
-export function validaPrenotazione(input: unknown, orari: Orario[], adesso: Date = new Date()): Esito {
+/** Dati in più per i controlli sulle chiusure straordinarie e sui coperti. */
+export type Contesto = {
+  chiusure?: Chiusura[];
+  prenotazioni?: { data: string; ora: string; persone: number; stato: string }[];
+  copertiMax?: number | null;
+};
+
+export function validaPrenotazione(input: unknown, orari: Orario[], adesso: Date = new Date(), ctx: Contesto = {}): Esito {
   const e: Record<string, string> = {};
   const r = (input ?? {}) as Record<string, unknown>;
   const nome = String(r.nome ?? "").trim();
@@ -38,9 +46,12 @@ export function validaPrenotazione(input: unknown, orari: Orario[], adesso: Date
   else if (data < oggiRoma(adesso)) e.data = "La data è già passata";
   else {
     const o = orarioDelGiorno(orari, data);
-    if (!o || o.chiuso) e.data = "Quel giorno siamo chiusi";
+    if (chiusuraDelGiorno(ctx.chiusure ?? [], data)) e.data = "Quel giorno siamo chiusi";
+    else if (!o || o.chiuso) e.data = "Quel giorno siamo chiusi";
     else if (!fasceOrarie(o).includes(ora)) e.ora = "Scegli un orario";
     else if (data === oggiRoma(adesso) && minutiFascia(o, ora) <= minutiRoma(adesso)) e.ora = "Quell'orario è già passato";
+    else if (ctx.copertiMax != null && copertiInFascia(ctx.prenotazioni ?? [], data, ora) + persone > ctx.copertiMax)
+      e.ora = "Questa fascia è al completo: scegli un altro orario";
   }
 
   if (Object.keys(e).length) return { ok: false, errori: e };
