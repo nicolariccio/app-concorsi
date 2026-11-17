@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { origineOk } from "@/lib/auth";
 import { avvisaGestore } from "@/lib/avviso";
-import { aggiornaPrenotazioneSe, getChiusure, getLocale, getOrari, getPrenotazioni, trovaPrenotazionePerCodice } from "@/lib/dati";
+import { aggiornaPrenotazioneSe, getChiusure, getLocale, getOrari, prenotazioniDelGiorno, trovaPrenotazionePerCodice } from "@/lib/dati";
 import { modificabile } from "@/lib/modificaPrenotazione";
 import { orarioDelGiorno } from "@/lib/orari";
 import { validaPrenotazione } from "@/lib/prenotazione";
@@ -38,7 +38,8 @@ export async function POST(req: Request, { params }: { params: Promise<{ codice:
     }
 
     // Modifica: stessi controlli di una prenotazione nuova (orari, chiusure, coperti), senza contare questa stessa.
-    const [chiusure, tutte] = await Promise.all([getChiusure(), getPrenotazioni()]);
+    const dataNuova = typeof corpo.data === "string" && /^\d{4}-\d{2}-\d{2}$/.test(corpo.data) ? corpo.data : p.data;
+    const [chiusure, tutte] = await Promise.all([getChiusure(), prenotazioniDelGiorno(dataNuova)]);
     const nuovo = { nome: p.nome, telefono: p.telefono, note: p.note, data: corpo.data ?? p.data, ora: corpo.ora ?? p.ora, persone: corpo.persone ?? p.persone };
     const esito = validaPrenotazione(nuovo, orari, new Date(), {
       chiusure,

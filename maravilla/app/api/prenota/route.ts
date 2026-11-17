@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { avvisaGestore } from "@/lib/avviso";
-import { getChiusure, getLocale, getOrari, getPrenotazioni, inserisciPrenotazione } from "@/lib/dati";
+import { getChiusure, getLocale, getOrari, inserisciPrenotazione, prenotazioniDelGiorno } from "@/lib/dati";
 import { validaPrenotazione } from "@/lib/prenotazione";
 import { NonConfigurato } from "@/lib/store";
 
@@ -12,7 +12,17 @@ export async function POST(req: Request) {
     return NextResponse.json({ messaggio: "Richiesta non valida" }, { status: 400 });
   }
 
-  const [orari, chiusure, prenotazioni, locale] = await Promise.all([getOrari(), getChiusure(), getPrenotazioni(), getLocale()]);
+  const dataRichiesta = typeof (corpo as { data?: unknown })?.data === "string" ? ((corpo as { data: string }).data) : "";
+  let prenotazioni: Awaited<ReturnType<typeof prenotazioniDelGiorno>> = [];
+  const [orari, chiusure, locale] = await Promise.all([getOrari(), getChiusure(), getLocale()]);
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dataRichiesta)) {
+    try {
+      prenotazioni = await prenotazioniDelGiorno(dataRichiesta);
+    } catch {
+      // Senza sapere chi ha già prenotato non si può rispettare il limite di coperti.
+      return NextResponse.json({ messaggio: "Non riusciamo a controllare la disponibilità, riprova" }, { status: 502 });
+    }
+  }
   if (orari.length === 0)
     return NextResponse.json({ messaggio: "Le prenotazioni online non sono ancora attive" }, { status: 503 });
 

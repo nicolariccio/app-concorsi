@@ -78,3 +78,8 @@ Chi dà i timbri usa la password admin. Il testo dell'informativa privacy (`/pri
 3. Dal link può cambiare data, ora e persone, oppure annullare, fino a 3 ore prima. Dopo, la pagina mostra il telefono del locale.
 4. Una modifica torna "in attesa" e va confermata di nuovo. Se hai attivato le email, ricevi un avviso per ogni modifica o annullamento.
 5. Le prenotazioni fatte prima di questa funzione non hanno il link.
+
+## Statistiche
+
+Nel pannello, **Statistiche**: prenotazioni e coperti degli ultimi 7, 30 o 90 giorni, annullate, prossimi 7 giorni, andamento, giorni della settimana, fasce orarie e carta fedeltà. Sono solo numeri: non ci sono nomi né telefoni.
+Nessuna migrazione. Le statistiche leggono al massimo 1000 prenotazioni per volta (tetto di Supabase): se superi quel numero nel periodo, la pagina lo segnala.

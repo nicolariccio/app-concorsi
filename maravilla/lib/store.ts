@@ -14,6 +14,8 @@ export interface Store {
   lista(tabella: string): Promise<Riga[]>;
   /** Righe con campo = valore (al massimo `limite`). */
   cerca(tabella: string, campo: string, valore: string, limite?: number): Promise<Riga[]>;
+  /** Righe con `campo` tra `da` e `a` (estremi inclusi), in ordine di `campo`, al massimo `limite`. */
+  intervallo(tabella: string, campo: string, da: string, a: string, limite: number): Promise<Riga[]>;
   /** Aggiorna la riga solo se i campi in `se` hanno ancora i valori letti; restituisce quante righe ha cambiato. */
   aggiornaSe(tabella: string, id: string, se: Riga, modifiche: Riga): Promise<number>;
   salva(tabella: string, righe: Riga[], chiave: string): Promise<void>;
@@ -40,6 +42,10 @@ function supabase(url: string, chiave: string): Store {
     },
     async cerca(t, campo, valore, limite = 50) {
       return (await (await chiama(`${t}?select=*&${campo}=eq.${encodeURIComponent(valore)}&limit=${limite}`, {})).json()) as Riga[];
+    },
+    async intervallo(t, campo, da, a, limite) {
+      const q = `${t}?select=*&${campo}=gte.${encodeURIComponent(da)}&${campo}=lte.${encodeURIComponent(a)}&order=${campo}.asc&limit=${limite}`;
+      return (await (await chiama(q, {})).json()) as Riga[];
     },
     async aggiornaSe(t, id, se, modifiche) {
       const filtri = Object.entries(se)
@@ -95,6 +101,12 @@ function file(): Store {
     },
     async cerca(t, campo, valore, limite = 50) {
       return ((await leggi())[t] ?? []).filter((r) => r[campo] === valore).slice(0, limite);
+    },
+    async intervallo(t, campo, da, a, limite) {
+      return ((await leggi())[t] ?? [])
+        .filter((r) => String(r[campo]) >= da && String(r[campo]) <= a)
+        .sort((x, y) => String(x[campo]).localeCompare(String(y[campo])))
+        .slice(0, limite);
     },
     async aggiornaSe(t, id, se, modifiche) {
       const d = await leggi();
