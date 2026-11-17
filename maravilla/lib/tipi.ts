@@ -14,7 +14,9 @@ export type Orario = {
   chiusura: string; // HH:MM, può essere dopo la mezzanotte
 };
 
-export type Categoria = { id: string; nome: string; ordine: number };
+export type Gruppo = "food" | "drink";
+
+export type Categoria = { id: string; nome: string; gruppo: Gruppo; ordine: number };
 
 export type Piatto = {
   id: string;

@@ -56,7 +56,8 @@ export function validaCategoria(x: unknown): Risultato<Obj> {
   const nome = testo(r.nome, 60);
   if (id === null) return { ok: false, errori: { id: "Id non valido" } };
   if (!nome) return { ok: false, errori: { nome: "Il nome è obbligatorio" } };
-  return { ok: true, valore: { ...(id ? { id } : {}), nome, ordine: intero(r.ordine) } };
+  if (r.gruppo !== "food" && r.gruppo !== "drink") return { ok: false, errori: { gruppo: "Scegli Food o Drink" } };
+  return { ok: true, valore: { ...(id ? { id } : {}), nome, gruppo: r.gruppo, ordine: intero(r.ordine) } };
 }
 
 export function validaPiatto(x: unknown): Risultato<Obj> {
