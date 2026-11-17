@@ -1,0 +1,44 @@
+{
+  "id_inpa": "dfa0bb3fce084ec3bf19766603276b95",
+  "url": "https://www.inpa.gov.it/bandi-e-avvisi/dettaglio-bando-avviso/?concorso_id=dfa0bb3fce084ec3bf19766603276b95",
+  "ente": "Comunita' Collinare Del Friuli",
+  "scadenza_inpa": "2026-12-10T11:00:00Z",
+  "posti": 1,
+  "nota": "Comunità Collinare del Friuli, istruttore direttivo tecnico. Elenco puntato di classi.",
+  "titolo_studio": {
+    "classi_laurea": [
+      "LM-3",
+      "LM-4",
+      "LM-10",
+      "LM-23",
+      "LM-24",
+      "LM-26",
+      "LM-35",
+      "LM-48",
+      "3/S",
+      "4/S",
+      "10/S",
+      "28/S",
+      "38/S",
+      "54/S",
+      "DM509-04",
+      "DM509-07",
+      "DM509-08",
+      "DM509-41",
+      "L-7",
+      "L-17",
+      "L-21",
+      "L-23",
+      "L-43"
+    ],
+    "diplomi": [],
+    "ambiguo": null
+  },
+  "patente": [
+    "B"
+  ],
+  "abilitazione": false,
+  "albo": false,
+  "eta_massima": null,
+  "esperienza_anni_minimi": null
+}

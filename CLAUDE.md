@@ -22,7 +22,26 @@ Documento completo: [docs/progetto.md](docs/progetto.md).
 
 ## Comandi
 
-Da completare quando ogni parte esiste (avvio, test, deploy).
+```bash
+pip install -r worker/requirements.txt -r requirements-dev.txt
+python worker/raccolta.py                 # raccolta bandi da inPA in dati/ (gitignored)
+python worker/raccolta.py --max-pagine 1  # prova veloce
+python worker/estrazione.py --max 5       # estrazione requisiti con Claude (serve ANTHROPIC_API_KEY)
+python worker/valuta.py                   # estrazione sul set di prova tests/bandi ed elenco errori
+python worker/valuta.py --riusa           # rivaluta l'ultima estrazione senza chiamare l'API
+python -m pytest                          # test (offline, nessuna chiamata all'API)
+```
+
+Set di prova: `tests/bandi/<id_inpa>/testo.txt` + `atteso.json` annotato a mano. Ogni modifica a
+`worker/estrazione.py` (prompt, modello, schema) si verifica con `python worker/valuta.py`.
+
+API inPA usate dal worker (pubbliche, senza autenticazione):
+- `POST https://portale.inpa.gov.it/concorsi-smart/api/concorso-public-area/search-better?page=N&size=50`
+  con corpo `{"status":["OPEN"], ...}`: elenco dei bandi aperti, dal più recente
+- `GET .../concorso-public-area/{id}`: dettaglio, con `allegati[].mediaId`
+- `GET https://portale.inpa.gov.it/api/media/{mediaId}`: PDF dell'allegato
+
+Avvio, test e deploy di web app e database: da completare quando esistono.
 
 ## Regole
 

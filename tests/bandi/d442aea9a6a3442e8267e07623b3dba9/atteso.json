@@ -1,0 +1,18 @@
+{
+  "id_inpa": "d442aea9a6a3442e8267e07623b3dba9",
+  "url": "https://www.inpa.gov.it/bandi-e-avvisi/dettaglio-bando-avviso/?concorso_id=d442aea9a6a3442e8267e07623b3dba9",
+  "ente": "Comune di Albano Sant'Alessandro",
+  "scadenza_inpa": "2026-12-10T22:30:00Z",
+  "posti": 2,
+  "nota": "Comune di Albano Sant'Alessandro. Il titolo di studio è rinviato a un allegato A non incluso: deve risultare ambiguo, senza classi inventate.",
+  "titolo_studio": {
+    "classi_laurea": [],
+    "diplomi": [],
+    "ambiguo": true
+  },
+  "patente": [],
+  "abilitazione": false,
+  "albo": false,
+  "eta_massima": null,
+  "esperienza_anni_minimi": null
+}

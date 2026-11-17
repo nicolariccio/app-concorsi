@@ -1,0 +1,39 @@
+{
+  "id_inpa": "ad3302ec353e404cb300d6aecef2ce0d",
+  "url": "https://www.inpa.gov.it/bandi-e-avvisi/dettaglio-bando-avviso/?concorso_id=ad3302ec353e404cb300d6aecef2ce0d",
+  "ente": "Comune di Cascina",
+  "scadenza_inpa": "2026-12-10T11:00:00Z",
+  "posti": 1,
+  "nota": "Comune di Cascina, funzionario tecnico. Richiede l'abilitazione da ingegnere; nessuna patente.",
+  "titolo_studio": {
+    "classi_laurea": [
+      "LM-23",
+      "LM-24",
+      "LM-26",
+      "LM-4",
+      "LM-28",
+      "LM-25",
+      "LM-29",
+      "LM-33",
+      "LM-30",
+      "28/S",
+      "4/S",
+      "31/S",
+      "29/S",
+      "32/S",
+      "36/S",
+      "33/S",
+      "DM509-10",
+      "DM509-08",
+      "L-9",
+      "L-7"
+    ],
+    "diplomi": [],
+    "ambiguo": null
+  },
+  "patente": [],
+  "abilitazione": true,
+  "albo": false,
+  "eta_massima": null,
+  "esperienza_anni_minimi": null
+}
