@@ -1,7 +1,7 @@
 export type Piattaforma = { id: "glovo" | "deliveroo"; nome: string; campo: "link_glovo" | "link_deliveroo"; colore: string; domini: string[]; esempio: string };
 
 export const PIATTAFORME: Piattaforma[] = [
-  { id: "glovo", nome: "Glovo", campo: "link_glovo", colore: "#FFC244", domini: ["glovoapp.com", "glovo.com", "glovo.page.link"], esempio: "https://glovoapp.com/…" },
+  { id: "glovo", nome: "Glovo", campo: "link_glovo", colore: "#FFC244", domini: ["glovoapp.com", "glovo.com", "glovo.page.link", "glovo.go.link"], esempio: "https://glovoapp.com/…" },
   { id: "deliveroo", nome: "Deliveroo", campo: "link_deliveroo", colore: "#00CCBC", domini: ["deliveroo.it", "deliveroo.com"], esempio: "https://deliveroo.it/…" },
 ];
 

@@ -10,6 +10,9 @@ describe("link Glovo e Deliveroo", () => {
     expect(validaLinkConsegna(glovo, "https://glovoapp.com/it/it/napoli/maravilla/").ok).toBe(true);
     expect(validaLinkConsegna(glovo, "https://www.glovoapp.com/it/it/napoli/x").ok).toBe(true);
     expect(validaLinkConsegna(glovo, "https://glovo.page.link/abc123").ok).toBe(true);
+    // il link di condivisione reale del negozio (Adjust): il testo con i parametri resta identico
+    const reale = "https://glovo.go.link/open?link_type=store&store_id=534550&adjust_t=s321jkn";
+    expect(validaLinkConsegna(glovo, reale)).toEqual({ ok: true, link: reale });
     expect(validaLinkConsegna(deliveroo, "https://deliveroo.it/it/menu/napoli/vomero/maravilla").ok).toBe(true);
     expect(validaLinkConsegna(deliveroo, "https://www.deliveroo.com/menu/x").ok).toBe(true);
   });
@@ -27,6 +30,9 @@ describe("link Glovo e Deliveroo", () => {
       "javascript:alert(1)",
       "glovoapp.com/it",
       "https://deliveroo.it/x", // di un'altra piattaforma
+      "https://go.link/open?store_id=1", // il servizio di link senza il sottodominio di Glovo
+      "https://evil.go.link/open?store_id=1",
+      "https://glovo.go.link.evil.example/open",
       "boh",
     ]) expect(validaLinkConsegna(glovo, x).ok, x).toBe(false);
     for (const x of ["https://deliveroo.it.evil.example/x", "https://glovoapp.com/x", "http://deliveroo.it/x"]) expect(validaLinkConsegna(deliveroo, x).ok, x).toBe(false);
