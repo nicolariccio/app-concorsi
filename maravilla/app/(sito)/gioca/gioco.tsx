@@ -28,23 +28,141 @@ function rettangolo(c: CanvasRenderingContext2D, x: number, y: number, w: number
 }
 
 // ---- disegno: tutto con forme semplici, nessuna immagine da caricare ----
+// Generatore casuale con seme fisso: ogni cotoletta ha sempre la stessa panatura.
+function casuale(seme: number) {
+  let x = seme;
+  return () => {
+    x = (x * 1664525 + 1013904223) % 4294967296;
+    return x / 4294967296;
+  };
+}
+
+const LARG_SPRITE = 78;
+const ALT_SPRITE = 58;
+const SCALA_SPRITE = 3; // disegnata più grande e rimpicciolita: resta nitida sugli schermi retina
+let sprite: HTMLCanvasElement[] | null = null;
+
+/** Una cotoletta disegnata una volta sola: sagoma irregolare, doratura, panatura, bordo fritto e riflesso. */
+function creaCotoletta(seme: number): HTMLCanvasElement {
+  const cv = document.createElement("canvas");
+  cv.width = LARG_SPRITE * SCALA_SPRITE;
+  cv.height = ALT_SPRITE * SCALA_SPRITE;
+  const c = cv.getContext("2d")!;
+  c.scale(SCALA_SPRITE, SCALA_SPRITE);
+  c.translate(LARG_SPRITE / 2, ALT_SPRITE / 2);
+  const r = casuale(seme);
+
+  // sagoma di una fetta battuta: ovale schiacciato e un po' storto, non un rettangolo
+  const dx = (r() - 0.5) * 3;
+  const dy = (r() - 0.5) * 3;
+  const forma = () => {
+    c.beginPath();
+    c.moveTo(-22 + dx, -2);
+    c.bezierCurveTo(-23, -15 + dy, -8, -19, 4, -18 + dy);
+    c.bezierCurveTo(16, -17, 24 - dx, -9, 22, 2);
+    c.bezierCurveTo(21, 13 + dy, 8, 19, -5 + dx, 17);
+    c.bezierCurveTo(-16, 15, -22 - dx, 9, -22 + dx, -2);
+    c.closePath();
+  };
+
+  // l'osso della milanese che esce da un lato: è quello che fa "leggere" subito una cotoletta
+  c.save();
+  c.lineCap = "round";
+  c.strokeStyle = "#A99468";
+  c.lineWidth = 6.4;
+  c.beginPath();
+  c.moveTo(-16, 8);
+  c.lineTo(-29, 12);
+  c.stroke();
+  c.strokeStyle = "#F1E8CF";
+  c.lineWidth = 4.4;
+  c.stroke();
+  for (const [x, y] of [[-31, 9.5], [-31.5, 15]]) {
+    c.fillStyle = "#F1E8CF";
+    c.strokeStyle = "#A99468";
+    c.lineWidth = 1.2;
+    c.beginPath();
+    c.arc(x, y, 3.2, 0, Math.PI * 2);
+    c.fill();
+    c.stroke();
+  }
+  c.restore();
+
+  // ombra morbida sotto
+  c.save();
+  c.shadowColor = "rgba(0,0,0,0.5)";
+  c.shadowBlur = 7;
+  c.shadowOffsetY = 3;
+  forma();
+  c.fillStyle = "#B47A30";
+  c.fill();
+  c.restore();
+
+  // doratura: più chiara al centro, più scura verso il bordo
+  const g = c.createRadialGradient(-6, -6, 2, 0, 0, 30);
+  g.addColorStop(0, "#F2D078");
+  g.addColorStop(0.55, "#DEAA50");
+  g.addColorStop(1, "#B67C32");
+  forma();
+  c.fillStyle = g;
+  c.fill();
+
+  c.save();
+  forma();
+  c.clip();
+
+  // briciole di pangrattato, chiare e scure
+  for (let i = 0; i < 130; i++) {
+    const x = (r() - 0.5) * 50;
+    const y = (r() - 0.5) * 40;
+    const raggio = 0.5 + r() * 1.5;
+    c.fillStyle = r() < 0.5 ? `rgba(255,238,176,${0.25 + r() * 0.45})` : `rgba(118,68,18,${0.2 + r() * 0.4})`;
+    c.beginPath();
+    c.ellipse(x, y, raggio * (1 + r()), raggio, r() * Math.PI, 0, Math.PI * 2);
+    c.fill();
+  }
+  // bolle della frittura: piccoli rilievi chiari con l'ombra dal lato opposto
+  for (let i = 0; i < 5; i++) {
+    const x = (r() - 0.5) * 34;
+    const y = (r() - 0.5) * 26;
+    const raggio = 2.5 + r() * 3;
+    c.fillStyle = "rgba(120,70,20,0.18)";
+    c.beginPath();
+    c.arc(x + 1, y + 1, raggio, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = "rgba(255,230,150,0.28)";
+    c.beginPath();
+    c.arc(x - 0.5, y - 0.5, raggio * 0.8, 0, Math.PI * 2);
+    c.fill();
+  }
+  // bordo più cotto e croccante, dentro la sagoma
+  forma();
+  c.lineWidth = 7;
+  c.strokeStyle = "rgba(110,60,15,0.42)";
+  c.stroke();
+  // riflesso di luce in alto a sinistra
+  const luce = c.createRadialGradient(-9, -9, 1, -9, -9, 16);
+  luce.addColorStop(0, "rgba(255,248,210,0.55)");
+  luce.addColorStop(1, "rgba(255,248,210,0)");
+  c.fillStyle = luce;
+  c.fillRect(-30, -30, 60, 60);
+  c.restore();
+
+  forma();
+  c.lineWidth = 1.6;
+  c.strokeStyle = "#8F5A22";
+  c.stroke();
+  return cv;
+}
+
 function disegnaCotoletta(c: CanvasRenderingContext2D, o: Oggetto, t: number) {
+  if (!sprite) sprite = [11, 23, 37].map(creaCotoletta);
+  const immagine = sprite[o.id % sprite.length];
+  const k = (o.r / 20) * 1.12; // un po' più grande della zona di presa: si legge meglio sul telefono
   c.save();
   c.translate(o.x, o.y);
   c.rotate(Math.sin(t * 3 + o.id) * 0.25 + o.giro);
-  c.fillStyle = "#D8BE82";
-  c.strokeStyle = "#A8803A";
-  c.lineWidth = 2.5;
-  c.beginPath();
-  rettangolo(c, -o.r, -o.r * 0.7, o.r * 2, o.r * 1.4, 11);
-  c.fill();
-  c.stroke();
-  c.fillStyle = "#B9904A";
-  for (const [dx, dy] of [[-8, -5], [3, -7], [9, 2], [-3, 4], [-11, 6]]) {
-    c.beginPath();
-    c.arc(dx, dy, 1.8, 0, Math.PI * 2);
-    c.fill();
-  }
+  c.drawImage(immagine, (-LARG_SPRITE / 2) * k, (-ALT_SPRITE / 2) * k, LARG_SPRITE * k, ALT_SPRITE * k);
   c.restore();
 }
 
