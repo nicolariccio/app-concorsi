@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { isAdmin, origineOk } from "@/lib/auth";
 import { aggiornaCartaSe, eliminaCarta, getLocale, trovaCartaPerId } from "@/lib/dati";
-import { applicaAzione, fedeltaAttiva, type Azione } from "@/lib/fedelta";
+import { applicaAzione, fedeltaAttiva, MAX_TIMBRI_ALLA_VOLTA, type Azione } from "@/lib/fedelta";
 
 const UUID = /^[0-9a-f-]{36}$/i;
 
@@ -15,17 +15,21 @@ async function controlli(): Promise<NextResponse | null> {
 export async function POST(req: Request) {
   const bloccato = await controlli();
   if (bloccato) return bloccato;
-  const c = (await req.json().catch(() => ({}))) as { id?: unknown; azione?: unknown };
+  const c = (await req.json().catch(() => ({}))) as { id?: unknown; azione?: unknown; quantita?: unknown };
   const id = String(c.id ?? "");
   if (!UUID.test(id) || !["timbro", "storno", "premio"].includes(String(c.azione)))
     return NextResponse.json({ messaggio: "Richiesta non valida" }, { status: 422 });
+
+  const quantita = c.quantita === undefined ? 1 : Number(c.quantita);
+  if (!Number.isInteger(quantita) || quantita < 1 || quantita > MAX_TIMBRI_ALLA_VOLTA)
+    return NextResponse.json({ messaggio: `Si possono dare da 1 a ${MAX_TIMBRI_ALLA_VOLTA} timbri alla volta` }, { status: 422 });
 
   try {
     const locale = await getLocale();
     if (!fedeltaAttiva(locale)) return NextResponse.json({ messaggio: "La carta fedeltà non è attiva" }, { status: 409 });
     const carta = await trovaCartaPerId(id);
     if (!carta) return NextResponse.json({ messaggio: "Carta non trovata" }, { status: 404 });
-    const esito = applicaAzione(carta, c.azione as Azione, locale.fedelta_timbri as number);
+    const esito = applicaAzione(carta, c.azione as Azione, locale.fedelta_timbri as number, new Date(), quantita);
     if (!esito.ok) return NextResponse.json({ messaggio: esito.messaggio }, { status: 409 });
     if (!(await aggiornaCartaSe(carta, esito.modifiche)))
       return NextResponse.json({ messaggio: "La carta è appena cambiata: riprova" }, { status: 409 });

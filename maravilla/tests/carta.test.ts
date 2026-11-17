@@ -32,6 +32,21 @@ describe("timbri e premio", () => {
     const r = applicaAzione(carta(3), "timbro", 10, adesso);
     expect(r.ok && r.modifiche.timbri).toBe(4);
   });
+  it("più timbri in una volta sola, da 1 a 10", () => {
+    const r = applicaAzione(carta(1), "timbro", 10, adesso, 3);
+    expect(r.ok && r.modifiche.timbri).toBe(4);
+    expect(r.ok && r.modifiche.ultimo_timbro).toBe(adesso.toISOString());
+    expect(applicaAzione(carta(0), "timbro", 10, adesso, 10).ok).toBe(true);
+    for (const q of [0, 11, -2, 2.5, NaN]) expect(applicaAzione(carta(0), "timbro", 10, adesso, q).ok).toBe(false);
+  });
+  it("anche con più timbri vale la pausa contro i doppi tocchi", () => {
+    const poco = new Date(adesso.getTime() - 5000).toISOString();
+    expect(applicaAzione(carta(3, poco), "timbro", 10, adesso, 3).ok).toBe(false);
+  });
+  it("tre timbri bastano per il premio da 3", () => {
+    const r = applicaAzione(carta(0), "timbro", 3, adesso, 3);
+    expect(r.ok && r.modifiche.timbri).toBe(3);
+  });
   it("rifiuta un secondo tocco entro la pausa, accetta dopo", () => {
     const poco = new Date(adesso.getTime() - (PAUSA_TIMBRO_S - 5) * 1000).toISOString();
     const tanto = new Date(adesso.getTime() - (PAUSA_TIMBRO_S + 5) * 1000).toISOString();
