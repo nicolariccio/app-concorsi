@@ -61,11 +61,20 @@ export function getChiusure(): Promise<Chiusura[]> {
   return oVuoto(async () => ((await store().lista("chiusure")) as unknown as Chiusura[]).sort((a, b) => a.dal.localeCompare(b.dal)), []);
 }
 
-export function getPrenotazioni(): Promise<PrenotazioneRiga[]> {
-  return oVuoto(async () => {
-    const righe = (await store().lista("prenotazioni")) as unknown as PrenotazioneRiga[];
-    return righe.sort((a, b) => (a.data + a.ora).localeCompare(b.data + b.ora));
-  }, []);
+/** Tetto di righe che Supabase restituisce di solito: oltre, le letture vengono troncate in silenzio. */
+export const LIMITE_RIGHE = 1000;
+
+const perData = (a: PrenotazioneRiga, b: PrenotazioneRiga) => (a.data + a.ora).localeCompare(b.data + b.ora);
+
+// Letture che NON nascondono gli errori: una lista vuota per errore farebbe saltare i controlli sui coperti.
+/** Prenotazioni di un solo giorno (per controllare i coperti). */
+export async function prenotazioniDelGiorno(data: string): Promise<PrenotazioneRiga[]> {
+  return ((await store().cerca("prenotazioni", "data", data, LIMITE_RIGHE)) as unknown as PrenotazioneRiga[]).sort(perData);
+}
+
+/** Prenotazioni tra due date (estremi inclusi), in ordine. */
+export async function prenotazioniTra(da: string, a: string): Promise<PrenotazioneRiga[]> {
+  return ((await store().intervallo("prenotazioni", "data", da, a, LIMITE_RIGHE)) as unknown as PrenotazioneRiga[]).sort(perData);
 }
 
 // Scritture: lasciano propagare gli errori (le usano le API admin).
