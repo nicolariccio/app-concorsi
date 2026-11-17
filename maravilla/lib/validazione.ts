@@ -1,5 +1,6 @@
 // Validazione dei dati inviati dal pannello admin. Funzioni pure, testate.
 import { ID_ALLERGENI } from "./allergeni";
+import { RE_FOTO } from "./fotoUrl";
 import { oraValida } from "./orari";
 import { parsePrezzo } from "./prezzo";
 
@@ -25,13 +26,15 @@ export function validaLocale(x: unknown): Risultato<Obj> {
   if (instagram && !/^https:\/\//.test(instagram)) e.instagram = "Inserisci il link completo (https://…)";
   const telefono = testo(r.telefono, 20);
   if (telefono && !/^\+?[0-9 ]{6,15}$/.test(telefono)) e.telefono = "Numero non valido";
+  const fotoHome = String(r.foto_home ?? "");
+  if (fotoHome && !RE_FOTO.test(fotoHome)) e.foto_home = "Foto non valida";
   const copertiTesto = String(r.coperti_max ?? "").trim();
   const coperti = copertiTesto === "" ? null : Number(copertiTesto);
   if (coperti !== null && (!Number.isInteger(coperti) || coperti < 1 || coperti > 500)) e.coperti_max = "Inserisci un numero da 1 a 500, oppure lascia vuoto";
   if (Object.keys(e).length) return { ok: false, errori: e };
   return {
     ok: true,
-    valore: { id: 1, coperti_max: coperti, nome, claim: testo(r.claim, 120), indirizzo: testo(r.indirizzo, 160), telefono, instagram, note: testo(r.note, 400) },
+    valore: { id: 1, coperti_max: coperti, foto_home: fotoHome, nome, claim: testo(r.claim, 120), indirizzo: testo(r.indirizzo, 160), telefono, instagram, note: testo(r.note, 400) },
   };
 }
 
@@ -74,6 +77,8 @@ export function validaPiatto(x: unknown): Risultato<Obj> {
   if (!nome) e.nome = "Il nome è obbligatorio";
   const prezzo = parsePrezzo(String(r.prezzo ?? ""));
   if (prezzo === undefined) e.prezzo = "Prezzo non valido (es. 9,50)";
+  const foto = String(r.foto ?? "");
+  if (foto && !RE_FOTO.test(foto)) e.foto = "Foto non valida";
   const allergeni = Array.isArray(r.allergeni) ? r.allergeni.map(String) : [];
   if (allergeni.some((a) => !ID_ALLERGENI.includes(a))) e.allergeni = "Allergene non valido";
   if (Object.keys(e).length) return { ok: false, errori: e };
@@ -88,6 +93,7 @@ export function validaPiatto(x: unknown): Risultato<Obj> {
       allergeni: [...new Set(allergeni)],
       esaurito: r.esaurito === true,
       visibile: r.visibile !== false,
+      foto,
       ordine: intero(r.ordine),
     },
   };

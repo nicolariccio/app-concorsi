@@ -54,3 +54,9 @@ Se l'email non parte, la prenotazione viene comunque salvata.
 ## Aggiornamenti del database
 
 Ogni volta che arriva una nuova migrazione in `supabase/migrations/`, eseguila nello SQL Editor di Supabase **prima** di pubblicare il codice che la usa.
+
+## Foto
+
+La migrazione `0005_foto.sql` crea da sola il contenitore delle foto ("foto", pubblico) nello Storage di Supabase.
+Dal pannello: la foto della Home si carica in **Info**, quella di ogni piatto in **Menu**.
+Le foto vengono ridimensionate dal telefono prima dell'invio (lato lungo 1600 px, circa 100-300 KB). Una foto sostituita o tolta resta nello Storage: con il piano gratuito (1 GB) ci sono migliaia di foto di margine.

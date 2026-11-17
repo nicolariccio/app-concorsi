@@ -4,7 +4,10 @@ import { useState } from "react";
 import { ALLERGENI } from "@/lib/allergeni";
 import { prezzoPerCampo } from "@/lib/prezzo";
 import type { Categoria, Gruppo, Piatto } from "@/lib/tipi";
+import { CampoFoto } from "../campo-foto";
 import { useAzione } from "../azione";
+
+type PiattoConFoto = Piatto & { foto_url?: string };
 
 // Forma che l'API si aspetta (il prezzo è un testo, es. "9,50").
 const perApi = (p: Piatto, extra: Partial<Piatto> = {}) => {
@@ -18,6 +21,7 @@ const perApi = (p: Piatto, extra: Partial<Piatto> = {}) => {
     allergeni: m.allergeni,
     esaurito: m.esaurito,
     visibile: m.visibile,
+    foto: m.foto ?? "",
     ordine: m.ordine,
   };
 };
@@ -30,7 +34,7 @@ function riordina<T extends { ordine: number }>(lista: T[], da: number, a: numbe
   return copia.map((x, i) => ({ ...x, ordine: (i + 1) * 10 }));
 }
 
-type Bozza = { nome: string; descrizione: string; prezzo: string; allergeni: string[]; esaurito: boolean; visibile: boolean };
+type Bozza = { nome: string; descrizione: string; prezzo: string; allergeni: string[]; esaurito: boolean; visibile: boolean; foto: string };
 
 function PiattoForm({
   categoriaId,
@@ -40,15 +44,15 @@ function PiattoForm({
   onGiu,
 }: {
   categoriaId: string;
-  piatto?: Piatto;
+  piatto?: PiattoConFoto;
   ordine: number;
   onSu?: () => void;
   onGiu?: () => void;
 }) {
-  const vuoto: Bozza = { nome: "", descrizione: "", prezzo: "", allergeni: [], esaurito: false, visibile: true };
+  const vuoto: Bozza = { nome: "", descrizione: "", prezzo: "", allergeni: [], esaurito: false, visibile: true, foto: "" };
   const [v, setV] = useState<Bozza>(
     piatto
-      ? { nome: piatto.nome, descrizione: piatto.descrizione, prezzo: prezzoPerCampo(piatto.prezzo_cent), allergeni: piatto.allergeni, esaurito: piatto.esaurito, visibile: piatto.visibile }
+      ? { nome: piatto.nome, descrizione: piatto.descrizione, prezzo: prezzoPerCampo(piatto.prezzo_cent), allergeni: piatto.allergeni, esaurito: piatto.esaurito, visibile: piatto.visibile, foto: piatto.foto ?? "" }
       : vuoto,
   );
   const { occupato, errori, esegui } = useAzione();
@@ -80,6 +84,7 @@ function PiattoForm({
         <label htmlFor={`d${id}`} className="etichetta">Ingredienti o descrizione</label>
         <input id={`d${id}`} className="campo" value={v.descrizione} onChange={(e) => setV({ ...v, descrizione: e.target.value })} />
       </div>
+      <CampoFoto id={`f${id}`} etichetta="Foto del piatto" anteprimaIniziale={piatto?.foto_url ?? ""} onCambia={(foto) => setV({ ...v, foto })} />
       <details className="rounded-xl border border-bordo px-4 py-2">
         <summary className="min-h-[36px] cursor-pointer py-1 text-sm text-salvia">
           Allergeni{v.allergeni.length > 0 ? ` (${v.allergeni.length})` : ""}
@@ -136,7 +141,7 @@ function CategoriaBox({
   onGiu,
 }: {
   categoria: Categoria;
-  piatti: Piatto[];
+  piatti: PiattoConFoto[];
   onSu: () => void;
   onGiu: () => void;
 }) {
@@ -183,7 +188,7 @@ function CategoriaBox({
 
       {piatti.map((p, i) => (
         <PiattoForm
-          key={`${p.id}-${p.ordine}-${p.nome}-${p.prezzo_cent}-${p.esaurito}-${p.visibile}-${p.descrizione}-${p.allergeni.join()}`}
+          key={`${p.id}-${p.ordine}-${p.nome}-${p.prezzo_cent}-${p.esaurito}-${p.visibile}-${p.foto}-${p.descrizione}-${p.allergeni.join()}`}
           categoriaId={categoria.id}
           piatto={p}
           ordine={p.ordine}
@@ -201,7 +206,7 @@ const GRUPPI: { id: Gruppo; titolo: string }[] = [
   { id: "drink", titolo: "Drink" },
 ];
 
-export function MenuAdmin({ categorie, piatti }: { categorie: Categoria[]; piatti: Piatto[] }) {
+export function MenuAdmin({ categorie, piatti }: { categorie: Categoria[]; piatti: PiattoConFoto[] }) {
   const [nuova, setNuova] = useState("");
   const [nuovoGruppo, setNuovoGruppo] = useState<Gruppo>("food");
   const { occupato, errori, esegui } = useAzione();

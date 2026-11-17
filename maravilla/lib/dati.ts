@@ -1,5 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
+import { urlFoto } from "./fotoUrl";
 import { NonConfigurato, store, type Riga } from "./store";
 import type { Chiusura } from "./disponibilita";
 import type { Categoria, Evento, Locale, Orario, Piatto, PrenotazioneRiga } from "./tipi";
@@ -17,7 +18,7 @@ async function oVuoto<T>(f: () => Promise<T>, vuoto: T): Promise<T> {
   }
 }
 
-export const localeVuoto: Locale = { nome: "Maravilla", claim: "", indirizzo: "", telefono: "", instagram: "", note: "", coperti_max: null };
+export const localeVuoto: Locale = { nome: "Maravilla", claim: "", indirizzo: "", telefono: "", instagram: "", note: "", coperti_max: null, foto_home: "" };
 
 export function getLocale(): Promise<Locale> {
   return oVuoto(async () => {
@@ -49,7 +50,7 @@ export function getEventi(): Promise<Evento[]> {
 export async function getMenuPubblico() {
   const [categorie, piatti] = await Promise.all([getCategorie(), getPiatti()]);
   const conPiatti = categorie
-    .map((c) => ({ ...c, gruppo: c.gruppo ?? "food", piatti: piatti.filter((p) => p.categoria_id === c.id && p.visibile) }))
+    .map((c) => ({ ...c, gruppo: c.gruppo ?? "food", piatti: piatti.filter((p) => p.categoria_id === c.id && p.visibile).map((p) => ({ ...p, foto_url: urlFoto(p.foto) })) }))
     .filter((c) => c.piatti.length > 0);
   return (["food", "drink"] as const)
     .map((g) => ({ gruppo: g, categorie: conPiatti.filter((c) => c.gruppo === g) }))

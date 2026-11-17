@@ -50,3 +50,34 @@ describe("validazioni admin", () => {
     expect(validaStato({ id: CAT, stato: "boh" }).ok).toBe(false);
   });
 });
+
+import { RE_FOTO, urlFoto } from "../lib/fotoUrl";
+
+describe("foto", () => {
+  const nome = "11111111-2222-4333-8444-555555555555.jpg";
+  it("accetta solo nomi generati da noi", () => {
+    expect(RE_FOTO.test(nome)).toBe(true);
+    for (const x of ["../x.jpg", "a.jpg", nome.replace(".jpg", ".svg"), "https://evil.example/x.jpg", `${nome}?x=1`, ""]) expect(RE_FOTO.test(x)).toBe(false);
+  });
+  it("piatto e locale: foto valida o vuota, altro rifiutato", () => {
+    const CAT = "11111111-1111-4111-8111-111111111111";
+    expect(validaPiatto({ categoria_id: CAT, nome: "A", foto: nome }).ok).toBe(true);
+    expect(validaPiatto({ categoria_id: CAT, nome: "A", foto: "" }).ok).toBe(true);
+    expect(validaPiatto({ categoria_id: CAT, nome: "A", foto: "https://evil.example/x.jpg" }).ok).toBe(false);
+    expect(validaLocale({ nome: "M", foto_home: nome }).ok).toBe(true);
+    expect(validaLocale({ nome: "M", foto_home: "../../etc/passwd" }).ok).toBe(false);
+  });
+  it("indirizzo: vuoto se non c'è la foto; locale in prova, Supabase con le chiavi", () => {
+    const prima = { u: process.env.SUPABASE_URL, k: process.env.SUPABASE_SERVICE_ROLE_KEY };
+    delete process.env.SUPABASE_URL;
+    delete process.env.SUPABASE_SERVICE_ROLE_KEY;
+    expect(urlFoto("")).toBe("");
+    expect(urlFoto("xx")).toBe("");
+    expect(urlFoto(nome)).toBe(`/api/foto/${nome}`);
+    process.env.SUPABASE_URL = "https://abc.supabase.co/";
+    process.env.SUPABASE_SERVICE_ROLE_KEY = "k";
+    expect(urlFoto(nome)).toBe(`https://abc.supabase.co/storage/v1/object/public/foto/${nome}`);
+    if (prima.u === undefined) delete process.env.SUPABASE_URL; else process.env.SUPABASE_URL = prima.u;
+    if (prima.k === undefined) delete process.env.SUPABASE_SERVICE_ROLE_KEY; else process.env.SUPABASE_SERVICE_ROLE_KEY = prima.k;
+  });
+});
