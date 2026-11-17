@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getEventi, getLocale, getOrari } from "@/lib/dati";
+import { urlFoto } from "@/lib/fotoUrl";
 import { linkMappa, righeOrari } from "@/lib/orariTesto";
 
 export const dynamic = "force-dynamic";
@@ -8,6 +9,7 @@ export default async function Home() {
   const [locale, orari, eventi] = await Promise.all([getLocale(), getOrari(), getEventi()]);
   const prossimo = eventi.find((e) => e.attivo && e.tipo === "evento");
   const righe = righeOrari(orari);
+  const fotoHome = urlFoto(locale.foto_home);
 
   return (
     <div className="space-y-10">
@@ -22,6 +24,11 @@ export default async function Home() {
           <Link href="/menu" className="bottone-vuoto">Guarda il menu</Link>
         </div>
       </section>
+
+      {fotoHome && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={fotoHome} alt={`${locale.nome}`} className="mx-auto aspect-[4/5] w-full max-w-sm rounded-b-2xl rounded-t-[999px] object-cover" />
+      )}
 
       {prossimo && (
         <Link href="/eventi" className="scheda block">

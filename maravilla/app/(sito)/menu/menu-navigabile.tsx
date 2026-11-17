@@ -7,7 +7,7 @@ import type { Piatto } from "@/lib/tipi";
 
 type Gruppo = {
   gruppo: "food" | "drink";
-  categorie: { id: string; nome: string; piatti: Piatto[] }[];
+  categorie: { id: string; nome: string; piatti: (Piatto & { foto_url: string })[] }[];
 };
 
 const ETICHETTE = { food: "Food", drink: "Drink" } as const;
@@ -61,8 +61,12 @@ export function MenuNavigabile({ gruppi }: { gruppi: Gruppo[] }) {
         <h2 className="mb-2 text-3xl font-semibold text-oro">{categoria.nome}</h2>
         <ul className="divide-y divide-bordo border-y border-bordo">
           {categoria.piatti.map((p) => (
-            <li key={p.id} className={`flex items-start justify-between gap-4 py-4 ${p.esaurito ? "opacity-60" : ""}`}>
-              <div>
+            <li key={p.id} className={`flex items-start gap-4 py-4 ${p.esaurito ? "opacity-60" : ""}`}>
+              {p.foto_url && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={p.foto_url} alt="" width={80} height={80} loading="lazy" className="h-20 w-20 shrink-0 rounded-xl object-cover" />
+              )}
+              <div className="min-w-0 flex-1">
                 <h3 className="font-display text-2xl font-bold leading-tight">
                   {p.nome}
                   {p.esaurito && <span className="ml-2 align-middle font-sans text-xs font-semibold uppercase tracking-wider text-oro">Esaurito</span>}

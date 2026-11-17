@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { Locale } from "@/lib/tipi";
+import { CampoFoto } from "../campo-foto";
 import { useAzione } from "../azione";
 
 type Campo = Exclude<keyof Locale, "coperti_max">;
@@ -16,7 +17,7 @@ const CAMPI: { chiave: Campo; etichetta: string; tipo?: string; lungo?: boolean;
   { chiave: "note", etichetta: "Presentazione breve", lungo: true, aiuto: "Una o due righe in Home" },
 ];
 
-export function LocaleForm({ iniziale }: { iniziale: Locale }) {
+export function LocaleForm({ iniziale, fotoHomeUrl }: { iniziale: Locale; fotoHomeUrl: string }) {
   const [v, setV] = useState<Valori>({ ...iniziale, coperti_max: iniziale.coperti_max?.toString() ?? "" });
   const { occupato, errori, esegui } = useAzione();
 
@@ -28,6 +29,10 @@ export function LocaleForm({ iniziale }: { iniziale: Locale }) {
         esegui("POST", "locale", v);
       }}
     >
+      <div>
+        <CampoFoto id="foto_home" etichetta="Foto della Home" forma="arco" anteprimaIniziale={fotoHomeUrl} onCambia={(f) => setV((x) => ({ ...x, foto_home: f }))} />
+        {errori.foto_home && <p className="errore">{errori.foto_home}</p>}
+      </div>
       {CAMPI.map((c) => (
         <div key={c.chiave}>
           <label htmlFor={c.chiave} className="etichetta">{c.etichetta}</label>

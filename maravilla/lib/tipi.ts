@@ -6,6 +6,7 @@ export type Locale = {
   instagram: string;
   note: string;
   coperti_max: number | null;
+  foto_home: string;
 };
 
 export type Orario = {
@@ -28,6 +29,7 @@ export type Piatto = {
   allergeni: string[];
   esaurito: boolean;
   visibile: boolean;
+  foto: string;
   ordine: number;
 };
 
