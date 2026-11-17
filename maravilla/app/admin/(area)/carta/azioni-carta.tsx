@@ -12,6 +12,18 @@ export function AzioniCarta({ id, timbri, target, nome }: { id: string; timbri: 
       <button type="button" disabled={occupato} className="bottone-piccolo bg-panna text-notte" onClick={() => esegui("POST", "carta", { id, azione: "timbro" }, "Timbro aggiunto")}>
         Aggiungi timbro
       </button>
+      {[2, 3, 5].map((n) => (
+        <button
+          key={n}
+          type="button"
+          disabled={occupato}
+          className="bottone-piccolo"
+          aria-label={`Aggiungi ${n} timbri`}
+          onClick={() => window.confirm(`Aggiungere ${n} timbri a ${nome}?`) && esegui("POST", "carta", { id, azione: "timbro", quantita: n }, `${n} timbri aggiunti`)}
+        >
+          +{n}
+        </button>
+      ))}
       {pronto && (
         <button type="button" disabled={occupato} className="bottone-piccolo border-oro text-oro" onClick={() => window.confirm(`Riscattare il premio per ${nome}?`) && esegui("POST", "carta", { id, azione: "premio" }, "Premio riscattato")}>
           Riscatta premio

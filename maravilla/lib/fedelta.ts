@@ -7,6 +7,7 @@ const ALFABETO = "abcdefghjkmnpqrstuvwxyz23456789";
 export const RE_CODICE = /^[a-z2-9]{16}$/;
 export const PAUSA_TIMBRO_S = 30;
 export const COOKIE_CARTA = "maravilla_carta";
+export const MAX_TIMBRI_ALLA_VOLTA = 10;
 
 export function generaCodice(): string {
   return Array.from({ length: 16 }, () => ALFABETO[randomInt(ALFABETO.length)]).join("");
@@ -45,11 +46,14 @@ export function applicaAzione(
   azione: Azione,
   timbriPerPremio: number,
   adesso: Date = new Date(),
+  quantita = 1,
 ): { ok: true; modifiche: Partial<Stato> } | { ok: false; messaggio: string } {
   if (azione === "timbro") {
+    if (!Number.isInteger(quantita) || quantita < 1 || quantita > MAX_TIMBRI_ALLA_VOLTA)
+      return { ok: false, messaggio: `Si possono dare da 1 a ${MAX_TIMBRI_ALLA_VOLTA} timbri alla volta` };
     if (carta.ultimo_timbro && adesso.getTime() - new Date(carta.ultimo_timbro).getTime() < PAUSA_TIMBRO_S * 1000)
       return { ok: false, messaggio: "Timbro appena aggiunto: aspetta qualche secondo" };
-    return { ok: true, modifiche: { timbri: carta.timbri + 1, ultimo_timbro: adesso.toISOString() } };
+    return { ok: true, modifiche: { timbri: carta.timbri + quantita, ultimo_timbro: adesso.toISOString() } };
   }
   if (azione === "storno") {
     if (carta.timbri < 1) return { ok: false, messaggio: "La carta non ha timbri" };
