@@ -1,13 +1,15 @@
 import Link from "next/link";
+import { getLocale } from "@/lib/dati";
+import { fedeltaAttiva } from "@/lib/fedelta";
 
-const voci = [
-  { href: "/", testo: "Home" },
-  { href: "/menu", testo: "Menu" },
-  { href: "/prenota", testo: "Prenota" },
-  { href: "/eventi", testo: "Eventi" },
-];
-
-export default function SitoLayout({ children }: { children: React.ReactNode }) {
+export default async function SitoLayout({ children }: { children: React.ReactNode }) {
+  const voci = [
+    { href: "/", testo: "Home" },
+    { href: "/menu", testo: "Menu" },
+    { href: "/prenota", testo: "Prenota" },
+    { href: "/eventi", testo: "Eventi" },
+    ...(fedeltaAttiva(await getLocale()) ? [{ href: "/carta", testo: "Carta" }] : []),
+  ];
   return (
     <>
       <header className="sticky top-0 z-10 border-b border-bordo bg-notte/95">

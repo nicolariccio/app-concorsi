@@ -7,6 +7,9 @@ export type Locale = {
   note: string;
   coperti_max: number | null;
   foto_home: string;
+  fedelta_timbri: number | null;
+  fedelta_premio: string;
+  fedelta_regola: string;
 };
 
 export type Orario = {
@@ -55,4 +58,16 @@ export type PrenotazioneRiga = {
   persone: number;
   note: string;
   stato: Stato;
+};
+
+export type CartaFedelta = {
+  id: string;
+  codice: string;
+  nome: string;
+  telefono: string;
+  consenso_il: string;
+  timbri: number;
+  premi: number;
+  ultimo_timbro: string | null;
+  creata_il: string;
 };

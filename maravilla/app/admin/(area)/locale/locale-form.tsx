@@ -5,8 +5,8 @@ import type { Locale } from "@/lib/tipi";
 import { CampoFoto } from "../campo-foto";
 import { useAzione } from "../azione";
 
-type Campo = Exclude<keyof Locale, "coperti_max">;
-type Valori = Omit<Locale, "coperti_max"> & { coperti_max: string };
+type Campo = "nome" | "claim" | "indirizzo" | "telefono" | "instagram" | "note";
+type Valori = Omit<Locale, "coperti_max" | "fedelta_timbri"> & { coperti_max: string; fedelta_timbri: string };
 
 const CAMPI: { chiave: Campo; etichetta: string; tipo?: string; lungo?: boolean; aiuto?: string }[] = [
   { chiave: "nome", etichetta: "Nome del locale" },
@@ -18,7 +18,7 @@ const CAMPI: { chiave: Campo; etichetta: string; tipo?: string; lungo?: boolean;
 ];
 
 export function LocaleForm({ iniziale, fotoHomeUrl }: { iniziale: Locale; fotoHomeUrl: string }) {
-  const [v, setV] = useState<Valori>({ ...iniziale, coperti_max: iniziale.coperti_max?.toString() ?? "" });
+  const [v, setV] = useState<Valori>({ ...iniziale, coperti_max: iniziale.coperti_max?.toString() ?? "", fedelta_timbri: iniziale.fedelta_timbri?.toString() ?? "" });
   const { occupato, errori, esegui } = useAzione();
 
   return (
@@ -51,6 +51,24 @@ export function LocaleForm({ iniziale, fotoHomeUrl }: { iniziale: Locale; fotoHo
         <p className="mt-1 text-xs text-salvia">Oltre questo numero di persone in una fascia (es. 20:30) il sito non accetta altre prenotazioni. Lascia vuoto per non avere limiti.</p>
         {errori.coperti_max && <p className="errore">{errori.coperti_max}</p>}
       </div>
+      <fieldset className="space-y-4 rounded-2xl border border-bordo p-4">
+        <legend className="px-2 font-display text-2xl font-semibold text-oro">Carta fedeltà</legend>
+        <p className="text-sm text-salvia">Per attivarla servono sia i timbri sia il premio. Lasciali vuoti per tenerla spenta: il sito non la mostra.</p>
+        <div>
+          <label htmlFor="fedelta_timbri" className="etichetta">Timbri per ottenere il premio</label>
+          <input id="fedelta_timbri" inputMode="numeric" className="campo" placeholder="Es. 10" value={v.fedelta_timbri} onChange={(e) => setV({ ...v, fedelta_timbri: e.target.value })} />
+          {errori.fedelta_timbri && <p className="errore">{errori.fedelta_timbri}</p>}
+        </div>
+        <div>
+          <label htmlFor="fedelta_premio" className="etichetta">Premio</label>
+          <input id="fedelta_premio" className="campo" placeholder="Es. Una cotoletta in omaggio" value={v.fedelta_premio} onChange={(e) => setV({ ...v, fedelta_premio: e.target.value })} />
+          {errori.fedelta_premio && <p className="errore">{errori.fedelta_premio}</p>}
+        </div>
+        <div>
+          <label htmlFor="fedelta_regola" className="etichetta">Come si guadagna un timbro</label>
+          <input id="fedelta_regola" className="campo" placeholder="Es. Un timbro per ogni ordine in sala" value={v.fedelta_regola} onChange={(e) => setV({ ...v, fedelta_regola: e.target.value })} />
+        </div>
+      </fieldset>
       <button type="submit" disabled={occupato} className="bottone w-full">{occupato ? "Salvo…" : "Salva"}</button>
     </form>
   );

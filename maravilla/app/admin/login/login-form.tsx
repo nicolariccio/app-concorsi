@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export function LoginForm() {
+export function LoginForm({ next }: { next: string }) {
   const router = useRouter();
   const [errore, setErrore] = useState("");
   const [occupato, setOccupato] = useState(false);
@@ -20,7 +20,7 @@ export function LoginForm() {
     }).catch(() => null);
     setOccupato(false);
     if (res?.ok) {
-      router.replace("/admin");
+      router.replace(next);
       router.refresh();
     } else {
       setErrore(res ? ((await res.json().catch(() => ({}))).messaggio ?? "Errore") : "Connessione assente");

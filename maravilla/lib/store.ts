@@ -12,6 +12,10 @@ export class NonConfigurato extends Error {
 
 export interface Store {
   lista(tabella: string): Promise<Riga[]>;
+  /** Righe con campo = valore (al massimo `limite`). */
+  cerca(tabella: string, campo: string, valore: string, limite?: number): Promise<Riga[]>;
+  /** Aggiorna la riga solo se i campi in `se` hanno ancora i valori letti; restituisce quante righe ha cambiato. */
+  aggiornaSe(tabella: string, id: string, se: Riga, modifiche: Riga): Promise<number>;
   salva(tabella: string, righe: Riga[], chiave: string): Promise<void>;
   inserisci(tabella: string, riga: Riga): Promise<void>;
   aggiorna(tabella: string, campo: string, valore: string, modifiche: Riga): Promise<void>;
@@ -33,6 +37,20 @@ function supabase(url: string, chiave: string): Store {
   return {
     async lista(t) {
       return (await (await chiama(`${t}?select=*`, {})).json()) as Riga[];
+    },
+    async cerca(t, campo, valore, limite = 50) {
+      return (await (await chiama(`${t}?select=*&${campo}=eq.${encodeURIComponent(valore)}&limit=${limite}`, {})).json()) as Riga[];
+    },
+    async aggiornaSe(t, id, se, modifiche) {
+      const filtri = Object.entries(se)
+        .map(([k, v]) => (v === null ? `${k}=is.null` : `${k}=eq.${encodeURIComponent(String(v))}`))
+        .join("&");
+      const res = await chiama(`${t}?id=eq.${encodeURIComponent(id)}&${filtri}`, {
+        method: "PATCH",
+        headers: { Prefer: "return=representation" },
+        body: JSON.stringify(modifiche),
+      });
+      return ((await res.json()) as Riga[]).length;
     },
     async salva(t, righe, chiave) {
       await chiama(`${t}?on_conflict=${chiave}`, {
@@ -74,6 +92,20 @@ function file(): Store {
   return {
     async lista(t) {
       return (await leggi())[t] ?? [];
+    },
+    async cerca(t, campo, valore, limite = 50) {
+      return ((await leggi())[t] ?? []).filter((r) => r[campo] === valore).slice(0, limite);
+    },
+    async aggiornaSe(t, id, se, modifiche) {
+      const d = await leggi();
+      let n = 0;
+      d[t] = (d[t] ?? []).map((r) => {
+        if (r.id !== id || !Object.entries(se).every(([k, v]) => (r[k] ?? null) === v)) return r;
+        n++;
+        return { ...r, ...modifiche };
+      });
+      await scrivi(d);
+      return n;
     },
     async salva(t, righe, chiave) {
       const d = await leggi();

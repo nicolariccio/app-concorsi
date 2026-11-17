@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { Disponibilita } from "@/lib/disponibilita";
 
@@ -104,6 +105,7 @@ export function PrenotaForm({ oggi, maxPersone }: { oggi: string; maxPersone: nu
         <textarea id="note" name="note" rows={2} maxLength={300} className="campo py-3" />
       </div>
       {stato === "errore" && <p className="errore">{messaggio}</p>}
+      <p className="text-xs text-salvia">I dati servono solo per gestire la prenotazione. <Link href="/privacy" className="underline">Informativa</Link></p>
       <button type="submit" disabled={stato === "invio" || chiuso} className="bottone w-full">
         {stato === "invio" ? "Invio…" : "Invia richiesta"}
       </button>
