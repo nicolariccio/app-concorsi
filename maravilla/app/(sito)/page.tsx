@@ -2,7 +2,9 @@ import Link from "next/link";
 import { getEventi, getLocale, getOrari } from "@/lib/dati";
 import { urlFoto } from "@/lib/fotoUrl";
 import { linkMappa, righeOrari } from "@/lib/orariTesto";
+import { urlIncorporamento } from "@/lib/instagram";
 import { OrdinaACasa } from "./ordina-a-casa";
+import { UltimoReel } from "./ultimo-reel";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +13,7 @@ export default async function Home() {
   const prossimo = eventi.find((e) => e.attivo && e.tipo === "evento");
   const righe = righeOrari(orari);
   const fotoHome = urlFoto(locale.foto_home);
+  const incorporamento = urlIncorporamento(locale.link_reel);
 
   return (
     <div className="space-y-10">
@@ -40,6 +43,8 @@ export default async function Home() {
           {prossimo.quando && <p className="text-sm text-salvia">{prossimo.quando}</p>}
         </Link>
       )}
+
+      {incorporamento && <UltimoReel incorporamento={incorporamento} link={locale.link_reel} profilo={locale.instagram} />}
 
       {(locale.indirizzo || righe.length > 0) && (
         <section className="space-y-3">

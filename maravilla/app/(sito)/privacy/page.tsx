@@ -21,7 +21,7 @@ export default async function Privacy() {
           <li><b className="text-panna">Prenotazioni:</b> nome, telefono, data, ora, numero di persone ed eventuali note. Servono a gestire e confermare il tavolo.</li>
           <li><b className="text-panna">Carta fedeltà:</b> nome, telefono e numero di timbri. Servono a tenere il conto dei timbri e del premio. Li raccogliamo solo con il tuo consenso.</li>
         </ul>
-        <p>Non usiamo questi dati per altri scopi e non li vendiamo. Non usiamo cookie di pubblicità: solo quello che ricorda la tua carta fedeltà su questo telefono.</p>
+        <p>Non usiamo questi dati per altri scopi e non li vendiamo. Non usiamo cookie di pubblicità: solo quello che ricorda la tua carta fedeltà su questo telefono. Il video di Instagram nella Home si carica solo se premi &quot;Guarda il reel&quot;: da quel momento Instagram (Meta) può usare cookie e raccogliere dati secondo la sua informativa.</p>
       </section>
       <section className="space-y-2">
         <h2 className="text-2xl font-semibold text-oro">Dove sono e per quanto</h2>

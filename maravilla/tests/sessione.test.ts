@@ -9,7 +9,9 @@ describe("sessione admin", () => {
   it("rifiuta firma sbagliata, segreto sbagliato, cookie manomesso o vuoto", () => {
     const c = creaSessione(segreto);
     expect(sessioneValida(c, "altro")).toBe(false);
-    expect(sessioneValida(c.replace(/.$/, "0"), segreto)).toBe(false);
+    // si cambia l'ultimo carattere della firma con uno sicuramente diverso (con "0" fisso il test falliva 1 volta su 16)
+    const ultimo = c.slice(-1) === "0" ? "1" : "0";
+    expect(sessioneValida(c.slice(0, -1) + ultimo, segreto)).toBe(false);
     expect(sessioneValida("9999999999.abc", segreto)).toBe(false);
     expect(sessioneValida(undefined, segreto)).toBe(false);
     expect(sessioneValida(c, "")).toBe(false);

@@ -18,7 +18,7 @@ async function oVuoto<T>(f: () => Promise<T>, vuoto: T): Promise<T> {
   }
 }
 
-export const localeVuoto: Locale = { nome: "Maravilla", claim: "", indirizzo: "", telefono: "", instagram: "", note: "", coperti_max: null, foto_home: "", fedelta_timbri: null, fedelta_premio: "", fedelta_regola: "", link_glovo: "", link_deliveroo: "" };
+export const localeVuoto: Locale = { nome: "Maravilla", claim: "", indirizzo: "", telefono: "", instagram: "", note: "", coperti_max: null, foto_home: "", fedelta_timbri: null, fedelta_premio: "", fedelta_regola: "", link_glovo: "", link_deliveroo: "", link_reel: "" };
 
 export function getLocale(): Promise<Locale> {
   return oVuoto(async () => {
