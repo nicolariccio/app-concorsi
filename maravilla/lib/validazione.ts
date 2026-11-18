@@ -2,6 +2,7 @@
 import { ID_ALLERGENI } from "./allergeni";
 import { PIATTAFORME, validaLinkConsegna } from "./consegna";
 import { RE_FOTO } from "./fotoUrl";
+import { leggiReel } from "./instagram";
 import { oraValida } from "./orari";
 import { parsePrezzo } from "./prezzo";
 
@@ -38,6 +39,8 @@ export function validaLocale(x: unknown): Risultato<Obj> {
     if (esito.ok) consegna[p.campo] = esito.link;
     else e[p.campo] = esito.errore;
   }
+  const reel = leggiReel(r.link_reel);
+  if (!reel.ok) e.link_reel = reel.errore;
   const fotoHome = String(r.foto_home ?? "");
   if (fotoHome && !RE_FOTO.test(fotoHome)) e.foto_home = "Foto non valida";
   const copertiTesto = String(r.coperti_max ?? "").trim();
@@ -46,7 +49,7 @@ export function validaLocale(x: unknown): Risultato<Obj> {
   if (Object.keys(e).length) return { ok: false, errori: e };
   return {
     ok: true,
-    valore: { id: 1, ...consegna, coperti_max: coperti, foto_home: fotoHome, fedelta_timbri: timbri, fedelta_premio: premio, fedelta_regola: testo(r.fedelta_regola, 200), nome, claim: testo(r.claim, 120), indirizzo: testo(r.indirizzo, 160), telefono, instagram, note: testo(r.note, 400) },
+    valore: { id: 1, ...consegna, link_reel: reel.ok ? reel.link : "", coperti_max: coperti, foto_home: fotoHome, fedelta_timbri: timbri, fedelta_premio: premio, fedelta_regola: testo(r.fedelta_regola, 200), nome, claim: testo(r.claim, 120), indirizzo: testo(r.indirizzo, 160), telefono, instagram, note: testo(r.note, 400) },
   };
 }
 

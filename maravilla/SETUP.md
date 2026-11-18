@@ -93,3 +93,10 @@ Nessuna migrazione. Le statistiche leggono al massimo 1000 prenotazioni per volt
 ## Minigioco "Cotolette dal cielo"
 
 La pagina `/gioca` (voce "Gioca" nel menu) è un gioco senza premi: si prendono le cotolette (+10) e si evitano le bombe (-25) per 45 secondi. Il record resta sul telefono del cliente. Non servono migrazioni né impostazioni.
+
+## Ultimo reel di Instagram nella Home
+
+1. Esegui `supabase/migrations/0009_reel_instagram.sql` nello SQL Editor di Supabase.
+2. Su Instagram apri il reel, tocca i tre puntini, "Copia link". In **Info**, sezione "Ultimo reel di Instagram", incollalo e premi **Salva**.
+3. Quando pubblichi un nuovo reel, sostituisci il link. Il sito non lo legge da solo: Instagram non permette di farlo senza un'app approvata da Meta.
+4. Il video si carica solo se il cliente preme "Guarda il reel", per non attivare i cookie di Instagram senza una scelta.

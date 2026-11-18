@@ -53,6 +53,15 @@ export function LocaleForm({ iniziale, fotoHomeUrl }: { iniziale: Locale; fotoHo
         {errori.coperti_max && <p className="errore">{errori.coperti_max}</p>}
       </div>
       <fieldset className="space-y-4 rounded-2xl border border-bordo p-4">
+        <legend className="px-2 font-display text-2xl font-semibold text-oro">Ultimo reel di Instagram</legend>
+        <p className="text-sm text-salvia">Apri il reel su Instagram, tocca i tre puntini, scegli &quot;Copia link&quot; e incollalo qui. Quando pubblichi un nuovo reel, sostituisci il link. Lascia vuoto per non mostrarlo.</p>
+        <div>
+          <label htmlFor="link_reel" className="etichetta">Link del reel</label>
+          <input id="link_reel" type="url" inputMode="url" className="campo" placeholder="https://www.instagram.com/reel/…" value={v.link_reel} onChange={(e) => setV({ ...v, link_reel: e.target.value })} />
+          {errori.link_reel && <p className="errore">{errori.link_reel}</p>}
+        </div>
+      </fieldset>
+      <fieldset className="space-y-4 rounded-2xl border border-bordo p-4">
         <legend className="px-2 font-display text-2xl font-semibold text-oro">Ordina a casa</legend>
         <p className="text-sm text-salvia">Incolla il link della tua pagina su Glovo e su Deliveroo: il sito mostra i pulsanti per ordinare. Lascia vuoto quello che non usi.</p>
         {PIATTAFORME.map((p) => (

@@ -12,6 +12,7 @@ export type Locale = {
   fedelta_regola: string;
   link_glovo: string;
   link_deliveroo: string;
+  link_reel: string;
 };
 
 export type Orario = {

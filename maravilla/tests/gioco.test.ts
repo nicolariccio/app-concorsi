@@ -59,20 +59,19 @@ describe("minigioco", () => {
     expect(s.giocatoreX).toBe(LARG - PIATTO.larg / 2);
   });
   it("compaiono oggetti nel tempo, sempre dentro lo schermo, bombe e cotolette", () => {
+    // generatore con seme fisso: il test dà sempre lo stesso risultato (con Math.random falliva una volta ogni tanto)
+    let x = 12345;
+    const rng = () => ((x = (x * 1664525 + 1013904223) % 4294967296) / 4294967296);
     const s = nuovoStato();
     let bombe = 0, cotolette = 0;
     for (let i = 0; i < 1400 && !s.finito; i++) {
-      passo(s, 1 / 60);
+      passo(s, 1 / 60, rng);
+      bombe = Math.max(bombe, s.oggetti.filter((o) => o.tipo === "bomba").length);
+      cotolette = Math.max(cotolette, s.oggetti.filter((o) => o.tipo === "cotoletta").length);
       for (const o of s.oggetti) {
         expect(o.x - o.r).toBeGreaterThanOrEqual(0);
         expect(o.x + o.r).toBeLessThanOrEqual(LARG);
       }
-    }
-    const s2 = nuovoStato();
-    for (let i = 0; i < 600; i++) {
-      passo(s2, 1 / 60);
-      bombe = Math.max(bombe, s2.oggetti.filter((o) => o.tipo === "bomba").length);
-      cotolette = Math.max(cotolette, s2.oggetti.filter((o) => o.tipo === "cotoletta").length);
     }
     expect(bombe).toBeGreaterThan(0);
     expect(cotolette).toBeGreaterThan(0);
