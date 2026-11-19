@@ -10,6 +10,7 @@ const voci = [
   { href: "/admin/eventi", testo: "Eventi" },
   { href: "/admin/carta", testo: "Carta" },
   { href: "/admin/statistiche", testo: "Statistiche" },
+  { href: "/admin/backup", testo: "Copia dati" },
   { href: "/admin/locale", testo: "Info" },
 ];
 
