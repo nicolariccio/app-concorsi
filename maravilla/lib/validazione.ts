@@ -161,3 +161,22 @@ export function validaChiusura(x: unknown): Risultato<Obj> {
   if (Object.keys(e).length) return { ok: false, errori: e };
   return { ok: true, valore: { ...(id ? { id } : {}), dal, al, motivo: testo(r.motivo, 80) } };
 }
+
+export function validaLimite(x: unknown): Risultato<Obj> {
+  const r = obj(x);
+  const e: Record<string, string> = {};
+  const id = idOpzionale(r.id);
+  if (id === null) e.id = "Id non valido";
+  const giorniIn = Array.isArray(r.giorni) ? r.giorni : [];
+  const giorni = [...new Set(giorniIn.map(Number))].sort((a, b) => a - b);
+  if (giorni.some((g) => !Number.isInteger(g) || g < 0 || g > 6)) e.giorni = "Giorni non validi";
+  const da = String(r.ora_da ?? "").trim();
+  const a = String(r.ora_a ?? "").trim();
+  if ((da === "") !== (a === "")) e.ora_da = "Indica sia l'ora di inizio sia quella di fine, oppure nessuna";
+  else if (da !== "" && (!oraValida(da) || !oraValida(a))) e.ora_da = "Orari non validi";
+  const maxTesto = String(r.max_coperti ?? "").trim();
+  const max = Number(maxTesto);
+  if (maxTesto === "" || !Number.isInteger(max) || max < 0 || max > 500) e.max_coperti = "Inserisci un numero da 0 a 500";
+  if (Object.keys(e).length) return { ok: false, errori: e };
+  return { ok: true, valore: { ...(id ? { id } : {}), giorni, ora_da: da || null, ora_a: a || null, max_coperti: max } };
+}

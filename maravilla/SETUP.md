@@ -106,3 +106,10 @@ La pagina `/gioca` (voce "Gioca" nel menu) è un gioco senza premi: si prendono 
 - **Controllo giornaliero:** `vercel.json` programma ogni giorno alle 6 (UTC) una lettura minima del database (`/api/cron/mantieni`), per evitare che Supabase lo metta in pausa per inattività. Parte da solo dopo il deploy: lo vedi in Vercel → Settings → Cron Jobs. Facoltativo: aggiungi la variabile `CRON_SECRET` (una stringa casuale lunga) per far rispondere l'indirizzo solo a Vercel.
 - **Copia dei dati:** nel pannello, **Copia dati**. Scarica un file completo (.json) oppure le prenotazioni e le carte fedeltà in un foglio per Excel (.csv). I file contengono nomi e telefoni: vanno tenuti al sicuro. Il ripristino da una copia, se serve, si fa a mano con me.
 - Nessuna migrazione.
+
+## Coperti per giorno e per orario
+
+1. Esegui `supabase/migrations/0010_limiti_coperti.sql` nello SQL Editor di Supabase.
+2. Nel pannello, **Coperti**: in alto vedi cosa vale giorno per giorno; sotto aggiungi le regole (giorni, eventuale intervallo di orario, coperti massimi). Limite 0 = nessuna prenotazione online in quelle fasce.
+3. Con più regole valide insieme vince la più specifica (giorno + orario, poi solo giorno, poi solo orario, poi tutti i giorni); a parità, il limite più basso. Se nessuna regola vale, resta il limite generale di **Info**.
+4. Il limite si applica alle prenotazioni di una stessa fascia oraria (chi arriva alle 20:30), non alle persone sedute insieme in orari diversi.

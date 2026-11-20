@@ -6,6 +6,7 @@ import {
   validaCategoria,
   validaChiusura,
   validaEvento,
+  validaLimite,
   validaLocale,
   validaOrari,
   validaPiatto,
@@ -23,8 +24,9 @@ const SALVABILI: Record<string, { tabella: string; chiave: string; valida: (x: u
   piatti: { tabella: "piatti", chiave: "id", valida: validaPiatto, nuovoId: true },
   eventi: { tabella: "eventi", chiave: "id", valida: validaEvento, nuovoId: true },
   chiusure: { tabella: "chiusure", chiave: "id", valida: validaChiusura, nuovoId: true },
+  limiti: { tabella: "limiti_coperti", chiave: "id", valida: validaLimite, nuovoId: true },
 };
-const ELIMINABILI: Record<string, string> = { categorie: "categorie_menu", piatti: "piatti", eventi: "eventi", chiusure: "chiusure" };
+const ELIMINABILI: Record<string, string> = { categorie: "categorie_menu", piatti: "piatti", eventi: "eventi", chiusure: "chiusure", limiti: "limiti_coperti" };
 
 async function controlli(): Promise<NextResponse | null> {
   if (!(await isAdmin())) return NextResponse.json({ messaggio: "Accesso richiesto" }, { status: 401 });

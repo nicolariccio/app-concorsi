@@ -2,6 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { urlFoto } from "./fotoUrl";
 import { NonConfigurato, store, type Riga } from "./store";
+import type { LimiteCoperti } from "./coperti";
 import type { Chiusura } from "./disponibilita";
 import type { Categoria, Evento, Locale, Orario, Piatto, PrenotazioneRiga } from "./tipi";
 
@@ -168,4 +169,9 @@ export async function esportaTabella(tabella: string): Promise<Riga[]> {
   const t = TABELLE_COPIA.find((x) => x.tabella === tabella);
   if (!t) throw new Error("Tabella sconosciuta");
   return store().tutte(t.tabella, t.ordine);
+}
+
+/** Regole dei coperti. Lettura che NON nasconde gli errori: una lista vuota per errore farebbe saltare i limiti. */
+export async function limitiCoperti(): Promise<LimiteCoperti[]> {
+  return (await store().lista("limiti_coperti")) as unknown as LimiteCoperti[];
 }

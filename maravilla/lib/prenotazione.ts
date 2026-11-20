@@ -1,4 +1,5 @@
 import { minutiRoma, oggiRoma } from "./datetime";
+import { limiteFascia, type LimiteCoperti } from "./coperti";
 import { chiusuraDelGiorno, copertiInFascia, type Chiusura } from "./disponibilita";
 import { fasceOrarie, minutiFascia, orarioDelGiorno } from "./orari";
 import type { Orario } from "./tipi";
@@ -24,6 +25,7 @@ export type Contesto = {
   chiusure?: Chiusura[];
   prenotazioni?: { data: string; ora: string; persone: number; stato: string }[];
   copertiMax?: number | null;
+  regole?: LimiteCoperti[];
 };
 
 export function validaPrenotazione(input: unknown, orari: Orario[], adesso: Date = new Date(), ctx: Contesto = {}): Esito {
@@ -50,8 +52,11 @@ export function validaPrenotazione(input: unknown, orari: Orario[], adesso: Date
     else if (!o || o.chiuso) e.data = "Quel giorno siamo chiusi";
     else if (!fasceOrarie(o).includes(ora)) e.ora = "Scegli un orario";
     else if (data === oggiRoma(adesso) && minutiFascia(o, ora) <= minutiRoma(adesso)) e.ora = "Quell'orario è già passato";
-    else if (ctx.copertiMax != null && copertiInFascia(ctx.prenotazioni ?? [], data, ora) + persone > ctx.copertiMax)
-      e.ora = "Questa fascia è al completo: scegli un altro orario";
+    else {
+      const limite = limiteFascia(ctx.regole ?? [], ctx.copertiMax ?? null, o, data, ora);
+      if (limite !== null && copertiInFascia(ctx.prenotazioni ?? [], data, ora) + persone > limite)
+        e.ora = "Questa fascia è al completo: scegli un altro orario";
+    }
   }
 
   if (Object.keys(e).length) return { ok: false, errori: e };
