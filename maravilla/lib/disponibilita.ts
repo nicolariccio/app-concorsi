@@ -1,3 +1,4 @@
+import { limiteFascia, type LimiteCoperti } from "./coperti";
 import { minutiRoma, oggiRoma } from "./datetime";
 import { fasceOrarie, minutiFascia, orarioDelGiorno } from "./orari";
 import type { Orario } from "./tipi";
@@ -23,6 +24,7 @@ export function disponibilita(p: {
   chiusure: Chiusura[];
   prenotazioni: Occupazione[];
   copertiMax: number | null;
+  regole?: LimiteCoperti[];
   data: string;
   adesso?: Date;
 }): Disponibilita {
@@ -34,6 +36,9 @@ export function disponibilita(p: {
   const oggi = p.data === oggiRoma(adesso);
   const fasce = fasceOrarie(o)
     .filter((ora) => !oggi || minutiFascia(o, ora) > minutiRoma(adesso))
-    .map((ora) => ({ ora, libera: p.copertiMax == null || copertiInFascia(p.prenotazioni, p.data, ora) < p.copertiMax }));
+    .map((ora) => {
+      const limite = limiteFascia(p.regole ?? [], p.copertiMax, o, p.data, ora);
+      return { ora, libera: limite === null || copertiInFascia(p.prenotazioni, p.data, ora) < limite };
+    });
   return { chiuso: false, motivo: "", fasce };
 }

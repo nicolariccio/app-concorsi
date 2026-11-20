@@ -49,7 +49,7 @@ export function LocaleForm({ iniziale, fotoHomeUrl }: { iniziale: Locale; fotoHo
       <div>
         <label htmlFor="coperti_max" className="etichetta">Coperti massimi per fascia oraria</label>
         <input id="coperti_max" inputMode="numeric" className="campo" placeholder="Nessun limite" value={v.coperti_max} onChange={(e) => setV({ ...v, coperti_max: e.target.value })} />
-        <p className="mt-1 text-xs text-salvia">Oltre questo numero di persone in una fascia (es. 20:30) il sito non accetta altre prenotazioni. Lascia vuoto per non avere limiti.</p>
+        <p className="mt-1 text-xs text-salvia">Oltre questo numero di persone in una fascia (es. 20:30) il sito non accetta altre prenotazioni. Lascia vuoto per non avere limiti. Per limiti diversi per giorno e per orario vai alla pagina Coperti.</p>
         {errori.coperti_max && <p className="errore">{errori.coperti_max}</p>}
       </div>
       <fieldset className="space-y-4 rounded-2xl border border-bordo p-4">
