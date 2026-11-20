@@ -100,3 +100,9 @@ La pagina `/gioca` (voce "Gioca" nel menu) è un gioco senza premi: si prendono 
 2. Su Instagram apri il reel, tocca i tre puntini, "Copia link". In **Info**, sezione "Ultimo reel di Instagram", incollalo e premi **Salva**.
 3. Quando pubblichi un nuovo reel, sostituisci il link. Il sito non lo legge da solo: Instagram non permette di farlo senza un'app approvata da Meta.
 4. Il video si carica solo se il cliente preme "Guarda il reel", per non attivare i cookie di Instagram senza una scelta.
+
+## Restare sul piano gratuito di Supabase: controllo giornaliero e copia dei dati
+
+- **Controllo giornaliero:** `vercel.json` programma ogni giorno alle 6 (UTC) una lettura minima del database (`/api/cron/mantieni`), per evitare che Supabase lo metta in pausa per inattività. Parte da solo dopo il deploy: lo vedi in Vercel → Settings → Cron Jobs. Facoltativo: aggiungi la variabile `CRON_SECRET` (una stringa casuale lunga) per far rispondere l'indirizzo solo a Vercel.
+- **Copia dei dati:** nel pannello, **Copia dati**. Scarica un file completo (.json) oppure le prenotazioni e le carte fedeltà in un foglio per Excel (.csv). I file contengono nomi e telefoni: vanno tenuti al sicuro. Il ripristino da una copia, se serve, si fa a mano con me.
+- Nessuna migrazione.

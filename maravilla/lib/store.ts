@@ -12,6 +12,8 @@ export class NonConfigurato extends Error {
 
 export interface Store {
   lista(tabella: string): Promise<Riga[]>;
+  /** TUTTE le righe della tabella, anche oltre il tetto di righe per richiesta (per le copie dei dati). */
+  tutte(tabella: string, ordine: string): Promise<Riga[]>;
   /** Righe con campo = valore (al massimo `limite`). */
   cerca(tabella: string, campo: string, valore: string, limite?: number): Promise<Riga[]>;
   /** Righe con `campo` tra `da` e `a` (estremi inclusi), in ordine di `campo`, al massimo `limite`. */
@@ -39,6 +41,16 @@ function supabase(url: string, chiave: string): Store {
   return {
     async lista(t) {
       return (await (await chiama(`${t}?select=*`, {})).json()) as Riga[];
+    },
+    async tutte(t, ordine) {
+      // Supabase restituisce al massimo ~1000 righe per richiesta: si leggono a pagine finché ne arrivano.
+      const PAGINA = 1000;
+      const tutte: Riga[] = [];
+      for (let da = 0; ; da += PAGINA) {
+        const pagina = (await (await chiama(`${t}?select=*&order=${ordine}.asc&limit=${PAGINA}&offset=${da}`, {})).json()) as Riga[];
+        tutte.push(...pagina);
+        if (pagina.length < PAGINA) return tutte;
+      }
     },
     async cerca(t, campo, valore, limite = 50) {
       return (await (await chiama(`${t}?select=*&${campo}=eq.${encodeURIComponent(valore)}&limit=${limite}`, {})).json()) as Riga[];
@@ -97,6 +109,9 @@ function file(): Store {
   }
   return {
     async lista(t) {
+      return (await leggi())[t] ?? [];
+    },
+    async tutte(t) {
       return (await leggi())[t] ?? [];
     },
     async cerca(t, campo, valore, limite = 50) {

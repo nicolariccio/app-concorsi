@@ -144,3 +144,28 @@ export async function aggiornaCartaSe(carta: CartaFedelta, modifiche: Riga): Pro
 export async function eliminaCarta(id: string): Promise<void> {
   await store().elimina("carte_fedelta", "id", id);
 }
+
+// --- Copia dei dati. Legge tutto, a pagine, e non nasconde gli errori.
+export const TABELLE_COPIA: { tabella: string; ordine: string }[] = [
+  { tabella: "locale", ordine: "id" },
+  { tabella: "orari", ordine: "giorno" },
+  { tabella: "categorie_menu", ordine: "id" },
+  { tabella: "piatti", ordine: "id" },
+  { tabella: "eventi", ordine: "id" },
+  { tabella: "chiusure", ordine: "id" },
+  { tabella: "prenotazioni", ordine: "id" },
+  { tabella: "carte_fedelta", ordine: "id" },
+];
+
+export async function esportaTutto(): Promise<Record<string, Riga[]>> {
+  const risultato: Record<string, Riga[]> = {};
+  for (const { tabella, ordine } of TABELLE_COPIA) risultato[tabella] = await store().tutte(tabella, ordine);
+  return risultato;
+}
+
+/** Solo la tabella chiesta (per i file CSV). */
+export async function esportaTabella(tabella: string): Promise<Riga[]> {
+  const t = TABELLE_COPIA.find((x) => x.tabella === tabella);
+  if (!t) throw new Error("Tabella sconosciuta");
+  return store().tutte(t.tabella, t.ordine);
+}
